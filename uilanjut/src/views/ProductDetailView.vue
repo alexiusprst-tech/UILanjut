@@ -27,7 +27,7 @@ watch(
     quantity.value = 1
     activeImageIndex.value = 0
     window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
+  },
 )
 
 // Related products
@@ -48,9 +48,9 @@ const breadcrumbItems = computed(() => {
   return [
     { label: 'Beranda', to: '/' },
     { label: 'Produk', to: '/products' },
-    { 
-      label: product.value.category, 
-      to: { path: '/products', query: { category: product.value.category } } 
+    {
+      label: product.value.category,
+      to: { path: '/products', query: { category: product.value.category } },
     },
     { label: product.value.name },
   ]
@@ -102,230 +102,231 @@ function handleBuyNow() {
       <Breadcrumbs :items="breadcrumbItems" />
 
       <!-- Case 1: Product Found -->
-      <div v-if="product" class="product-detail-content">
-        <!-- Main Product Card / Detail Grid -->
-        <div class="detail-grid card">
-          <!-- Left: Image Gallery Showcase -->
-          <div class="gallery-column">
-            <div class="main-image-container">
-              <img 
-                :src="product.images ? product.images[activeImageIndex] : product.image" 
-                :alt="product.name" 
-                class="main-product-image"
-              />
-              <span v-if="product.badge" class="detail-badge">{{ product.badge }}</span>
+      <div v-if="product" class="product-detail-page">
+        <!-- Detail Header -->
+        <button @click="$router.push('/products')" class="btn-back">
+          &larr; Kembali ke Daftar Produk
+        </button>
+
+        <div class="detail-header">
+          <span class="product-tag-pill">{{ product.category }}</span>
+          <h1 class="header-product-title">{{ product.name }}</h1>
+          <div class="meta-info">
+            <span class="meta-item"
+              >⭐ Rating: {{ product.rating }} ({{ product.reviewsCount }} ulasan)</span
+            >
+            <span class="meta-item">📦 Stok: {{ product.stock }} unit</span>
+            <span class="meta-item">🏷️ ID: #{{ product.id }}</span>
+            <span class="meta-item">🚚 Siap Kirim Hari Ini</span>
+          </div>
+        </div>
+
+        <!-- ===================================================================
+             MODUL 2: ASYMMETRICAL LAYOUT (2fr : 1fr)
+             2/3 Area Kiri: Deskripsi & Spesifikasi Terstruktur (F-Pattern)
+             1/3 Area Kanan: Panel Transaksi Sticky (Focal Point & Squint Test)
+             =================================================================== -->
+        <div class="detail-content grid-asymmetric">
+          <!-- F-PATTERN: Kolom Kiri (2fr) -->
+          <div class="main-desc">
+            <!-- Image Gallery Showcase -->
+            <div class="gallery-card card">
+              <div class="main-image-container">
+                <img
+                  :src="product.images ? product.images[activeImageIndex] : product.image"
+                  :alt="product.name"
+                  class="main-product-image"
+                />
+                <span v-if="product.badge" class="detail-badge">{{ product.badge }}</span>
+              </div>
+
+              <!-- Thumbnail Selector -->
+              <div v-if="product.images && product.images.length > 1" class="thumbnails-row">
+                <button
+                  v-for="(img, idx) in product.images"
+                  :key="idx"
+                  type="button"
+                  class="thumbnail-btn"
+                  :class="{ active: activeImageIndex === idx }"
+                  @click="activeImageIndex = idx"
+                >
+                  <img :src="img" :alt="`${product.name} thumb ${idx + 1}`" class="thumb-img" />
+                </button>
+              </div>
             </div>
 
-            <!-- Thumbnail Selector (if multiple images) -->
-            <div v-if="product.images && product.images.length > 1" class="thumbnails-row">
-              <button 
-                v-for="(img, idx) in product.images" 
-                :key="idx" 
-                type="button"
-                class="thumbnail-btn"
-                :class="{ 'active': activeImageIndex === idx }"
-                @click="activeImageIndex = idx"
-              >
-                <img :src="img" :alt="`${product.name} thumb ${idx + 1}`" class="thumb-img" />
-              </button>
+            <!-- F-Pattern Section 1: Deskripsi Paragraf -->
+            <h2>Deskripsi Lengkap Produk</h2>
+            <p>{{ product.description }}</p>
+            <p>
+              Dapatkan pengalaman belanja terbaik dengan jaminan keaslian 100% dan garansi resmi.
+              Produk {{ product.name }} dirancang menggunakan material terbaik dan standar kendali
+              mutu tinggi untuk memastikan keawetan, kenyamanan pemakaian, serta kepuasan maksimal
+              Anda.
+            </p>
+
+            <!-- F-Pattern Section 2: Spesifikasi & Keunggulan (Bullet Points) -->
+            <h2>Spesifikasi &amp; Keunggulan Produk</h2>
+            <ul class="agenda-list">
+              <li v-for="(feat, fIdx) in product.features" :key="fIdx">
+                <strong>Keunggulan {{ fIdx + 1 }}:</strong> {{ feat }}
+              </li>
+              <li>
+                <strong>Garansi:</strong> 1 Tahun Garansi Resmi Distributor SHOPNEST Indonesia
+              </li>
+              <li>
+                <strong>Pengiriman:</strong> Tersedia kurir Instant (2 jam), Sameday, dan Reguler
+                Bebas Ongkir
+              </li>
+            </ul>
+
+            <!-- F-Pattern Section 3: Ringkasan Ulasan Pembeli -->
+            <h2>Ulasan Pelanggan Terverifikasi</h2>
+            <div class="review-summary-card card">
+              <div class="rating-large-score">
+                <span class="rating-num">{{ product.rating }}</span>
+                <span class="rating-max">/ 5.0</span>
+              </div>
+              <div class="rating-text-block">
+                <p class="rating-highlight">Kepuasan Pembeli Sangat Baik (98% Positif)</p>
+                <p class="rating-sub">
+                  Dihitung dari total {{ product.reviewsCount }} pembeli yang telah menerima barang
+                  dengan status transaksi selesai.
+                </p>
+              </div>
             </div>
           </div>
 
-          <!-- Right: Product Information & Purchase Controls -->
-          <div class="info-column">
-            <!-- Category & ID Tag -->
-            <div class="info-header-meta">
-              <RouterLink 
-                :to="{ path: '/products', query: { category: product.category } }"
-                class="badge badge-primary category-link"
-              >
-                {{ product.category }}
-              </RouterLink>
-              <span class="product-id-tag">ID: #{{ product.id }}</span>
-            </div>
+          <!-- FOCAL POINT & STICKY PANE: Kolom Kanan (1fr) -->
+          <div class="sidebar">
+            <div class="ticket-card sticky-pane">
+              <span class="pane-tag">TRANSAKSI LANGSUNG</span>
+              <h3 class="pane-title">Atur Pesanan</h3>
 
-            <!-- Title -->
-            <h1 class="detail-title">{{ product.name }}</h1>
-
-            <!-- Rating & Review Count -->
-            <div class="detail-rating-row">
-              <div class="stars-wrap">
-                <svg 
-                  v-for="star in 5" 
-                  :key="star" 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  viewBox="0 0 24 24" 
-                  fill="currentColor" 
-                  class="star-svg"
-                  :class="{ 'star-muted': star > Math.round(product.rating) }"
-                >
-                  <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clip-rule="evenodd" />
-                </svg>
+              <!-- Price -->
+              <p class="price">{{ formatRupiah(product.price) }}</p>
+              <div v-if="product.originalPrice" class="original-price-wrap">
+                <span class="price-strikethrough">{{ formatRupiah(product.originalPrice) }}</span>
+                <span class="discount-badge">Diskon Spesial</span>
               </div>
-              <span class="detail-rating-score">{{ product.rating }}</span>
-              <span class="rating-dot">•</span>
-              <span class="detail-review-count">{{ product.reviewsCount }} Ulasan Pembeli</span>
-              <span class="rating-dot">•</span>
-              <span class="terjual-text">Terjual 350+</span>
-            </div>
+              <p class="ticket-desc">Stok tersedia dan siap dikemas langsung.</p>
 
-            <!-- Price Box -->
-            <div class="detail-price-box">
-              <div class="price-wrap">
-                <span class="detail-current-price">{{ formatRupiah(product.price) }}</span>
-                <span v-if="product.originalPrice" class="detail-original-price">
-                  {{ formatRupiah(product.originalPrice) }}
-                </span>
-              </div>
-              <div class="stock-badge-wrap">
-                <span class="stock-pill" :class="{ 'warning': product.stock <= 10 }">
-                  <span class="stock-dot"></span>
-                  <span>Stok Tersedia (Sisa {{ product.stock }} unit)</span>
-                </span>
-              </div>
-            </div>
-
-            <!-- Description -->
-            <div class="detail-desc-box">
-              <h3 class="desc-heading">Deskripsi Produk</h3>
-              <p class="desc-text">{{ product.description }}</p>
-            </div>
-
-            <!-- Highlights / Features -->
-            <div v-if="product.features && product.features.length" class="detail-features-box">
-              <h3 class="features-heading">Spesifikasi &amp; Keunggulan</h3>
-              <ul class="features-list">
-                <li v-for="(feat, fIdx) in product.features" :key="fIdx" class="feature-item">
-                  <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                  </svg>
-                  <span>{{ feat }}</span>
-                </li>
-              </ul>
-            </div>
-
-            <!-- Purchase & Quantity Controls -->
-            <div class="purchase-section">
-              <div class="qty-control-row">
-                <span class="qty-label">Jumlah:</span>
+              <!-- Quantity Selector -->
+              <div class="qty-section">
+                <span class="qty-heading">Jumlah:</span>
                 <div class="qty-selector">
-                  <button 
-                    type="button" 
-                    class="qty-btn" 
+                  <button
+                    type="button"
+                    class="qty-btn"
                     :disabled="quantity <= 1"
                     @click="decrementQty"
                     aria-label="Kurangi jumlah"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="qty-icon">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14" />
-                    </svg>
+                    &minus;
                   </button>
-                  <input 
-                    type="number" 
-                    :value="quantity" 
-                    min="1" 
-                    :max="product.stock" 
+                  <input
+                    type="number"
+                    :value="quantity"
+                    min="1"
+                    :max="product.stock"
                     class="qty-input"
                     @input="handleQtyInput"
                   />
-                  <button 
-                    type="button" 
-                    class="qty-btn" 
+                  <button
+                    type="button"
+                    class="qty-btn"
                     :disabled="quantity >= product.stock"
                     @click="incrementQty"
                     aria-label="Tambah jumlah"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="qty-icon">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                    </svg>
+                    &plus;
                   </button>
                 </div>
-                <span class="subtotal-calc">
-                  Subtotal: <strong>{{ formatRupiah(product.price * quantity) }}</strong>
-                </span>
               </div>
 
-              <!-- Action Buttons -->
-              <div class="detail-action-buttons">
-                <button 
-                  type="button" 
-                  class="btn btn-primary btn-lg btn-add-cart-detail" 
-                  @click="handleAddToCart"
-                >
-                  <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+              <div class="subtotal-display">
+                <span>Subtotal:</span>
+                <strong>{{ formatRupiah(product.price * quantity) }}</strong>
+              </div>
+
+              <!-- STRONGEST FOCAL POINT (Squint Test) -->
+              <button class="btn-register" @click="handleAddToCart">🛒 Tambah ke Keranjang</button>
+
+              <button class="btn-buy-secondary" @click="handleBuyNow">
+                ⚡ Beli Sekarang Langsung
+              </button>
+
+              <p class="spots" v-if="product.stock <= 10">
+                ⚠️ Hanya tersisa {{ product.stock }} unit lagi!
+              </p>
+              <p class="spots in-stock" v-else>✅ Stok Aman (Sisa {{ product.stock }} unit)</p>
+
+              <!-- Trust Assurance Badges -->
+              <div class="trust-perks-list">
+                <div class="perk-item">
+                  <svg
+                    class="perk-icon"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="2"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"
+                    />
                   </svg>
-                  <span>Tambah ke Keranjang</span>
-                </button>
-
-                <button 
-                  type="button" 
-                  class="btn btn-outline btn-lg btn-buy-now" 
-                  @click="handleBuyNow"
-                >
-                  <span>Beli Langsung</span>
-                </button>
-              </div>
-
-              <!-- Back to Catalog Link -->
-              <div class="back-link-wrap">
-                <RouterLink to="/products" class="back-link">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="back-arrow">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                  <span>100% Produk Original &amp; Resmi</span>
+                </div>
+                <div class="perk-item">
+                  <svg
+                    class="perk-icon"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="2"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
+                    />
                   </svg>
-                  <span>Kembali ke Daftar Produk</span>
-                </RouterLink>
-              </div>
-            </div>
-
-            <!-- Guarantee Badges -->
-            <div class="guarantee-row">
-              <div class="guarantee-item">
-                <svg class="g-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
-                </svg>
-                <span>Garansi Resmi 100% Original</span>
-              </div>
-              <div class="guarantee-item">
-                <svg class="g-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
-                </svg>
-                <span>7 Hari Pengembalian Barang</span>
+                  <span>Jaminan Retur 7 Hari Bebas Repot</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Related Products Section (Parent-Child navigation showcase) -->
+        <!-- Related Products Section (Adaptive Grid) -->
         <div v-if="relatedProducts.length > 0" class="related-section">
           <div class="section-header">
-            <h2 class="section-title" style="font-size: 1.5rem;">Produk Terkait dalam Kategori {{ product.category }}</h2>
-            <RouterLink 
-              :to="{ path: '/products', query: { category: product.category } }" 
+            <h2 class="section-title" style="font-size: 1.5rem">
+              Produk Terkait dalam Kategori {{ product.category }}
+            </h2>
+            <RouterLink
+              :to="{ path: '/products', query: { category: product.category } }"
               class="view-all-link"
             >
-              <span>Lihat Kategori Lengkap</span>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="link-arrow">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-              </svg>
+              <span>Lihat Kategori Lengkap &rarr;</span>
             </RouterLink>
           </div>
 
-          <div class="products-grid">
-            <ProductCard 
-              v-for="rel in relatedProducts" 
-              :key="rel.id" 
-              :product="rel" 
-            />
+          <div class="adaptive-products-grid">
+            <ProductCard v-for="rel in relatedProducts" :key="rel.id" :product="rel" />
           </div>
         </div>
       </div>
 
-      <!-- Case 2: Product Not Found (Invalid ID) -->
+      <!-- Case 2: Product Not Found -->
       <div v-else class="not-found-container">
-        <EmptyState 
-          title="Produk Tidak Ditemukan" 
-          message="Produk dengan ID yang Anda cari tidak tersedia di sistem atau mungkin telah dihapus dari katalog." 
+        <EmptyState
+          title="Produk Tidak Ditemukan"
+          message="Produk dengan ID yang Anda cari tidak tersedia di sistem atau mungkin telah dihapus dari katalog."
           icon="404"
           action-text="Kembali ke Katalog Produk"
           action-to="/products"
@@ -337,43 +338,108 @@ function handleBuyNow() {
 
 <style scoped>
 .product-detail-view {
-  padding-top: 2rem;
-  padding-bottom: 4rem;
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-16);
 }
 
-/* Detail Card Layout */
-.detail-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2.5rem;
-  padding: 1.5rem;
-  background-color: #ffffff;
-  margin-bottom: 3.5rem;
+.btn-back {
+  background: none;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: var(--space-6);
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0;
+  transition:
+    color 0.2s,
+    transform 0.2s;
 }
 
-@media (min-width: 1024px) {
-  .detail-grid {
-    grid-template-columns: 1.05fr 1.35fr;
-    padding: 2.5rem;
-    gap: 3rem;
+.btn-back:hover {
+  color: var(--primary);
+  transform: translateX(-3px);
+}
+
+/* Detail Header Banner */
+.detail-header {
+  background: var(--bg-light);
+  border-radius: var(--space-4);
+  border: 1px solid var(--border-color);
+  padding: var(--space-8) var(--space-8);
+  margin-bottom: var(--space-8);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.product-tag-pill {
+  display: inline-block;
+  background: rgba(37, 99, 235, 0.1);
+  color: var(--primary);
+  padding: var(--space-1) var(--space-4);
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-bottom: var(--space-3);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.header-product-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: var(--space-4);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+@media (min-width: 768px) {
+  .header-product-title {
+    font-size: 2.75rem;
   }
 }
 
-/* Gallery Column */
-.gallery-column {
+.meta-info {
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+}
+
+.meta-item {
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+/* ==========================================================================
+   MODUL 2: ASYMMETRICAL GRID (2fr : 1fr)
+   ========================================================================== */
+.grid-asymmetric {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--space-12);
+  align-items: start;
+}
+
+/* Gallery Showcase Box */
+.gallery-card {
+  padding: var(--space-6);
+  background: white;
+  border-radius: var(--space-4);
+  margin-bottom: var(--space-8);
 }
 
 .main-image-container {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 3;
-  border-radius: var(--radius-lg);
+  aspect-ratio: 16 / 10;
+  border-radius: var(--space-3);
   overflow: hidden;
-  background-color: #f1f5f9;
-  border: 1px solid var(--color-border);
+  background-color: #f8fafc;
+  border: 1px solid var(--border-color);
 }
 
 .main-product-image {
@@ -386,35 +452,36 @@ function handleBuyNow() {
   position: absolute;
   top: 14px;
   left: 14px;
-  background-color: var(--color-primary);
+  background-color: var(--primary);
   color: #ffffff;
   font-size: 0.8rem;
   font-weight: 700;
-  padding: 0.35rem 0.85rem;
-  border-radius: var(--radius-full);
+  padding: var(--space-1) var(--space-3);
+  border-radius: 50px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .thumbnails-row {
   display: flex;
-  gap: 0.75rem;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
 }
 
 .thumbnail-btn {
-  width: 72px;
-  height: 72px;
-  border-radius: var(--radius-md);
+  width: 70px;
+  height: 70px;
+  border-radius: var(--space-2);
   overflow: hidden;
-  border: 2px solid var(--color-border);
+  border: 2px solid var(--border-color);
   background: none;
   cursor: pointer;
-  transition: all var(--transition-fast);
   padding: 0;
+  transition: all 0.2s;
 }
 
-.thumbnail-btn:hover,
-.thumbnail-btn.active {
-  border-color: var(--color-primary);
+.thumbnail-btn.active,
+.thumbnail-btn:hover {
+  border-color: var(--primary);
   box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
 
@@ -424,252 +491,192 @@ function handleBuyNow() {
   object-fit: cover;
 }
 
-/* Info Column */
-.info-column {
-  display: flex;
-  flex-direction: column;
-}
-
-.info-header-meta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.75rem;
-}
-
-.category-link {
-  text-decoration: none;
-  transition: opacity var(--transition-fast);
-}
-
-.category-link:hover {
-  opacity: 0.85;
-}
-
-.product-id-tag {
-  font-size: 0.8rem;
-  color: var(--color-text-muted);
-  font-weight: 600;
-}
-
-.detail-title {
-  font-size: 1.85rem;
+/* ==========================================================================
+   MODUL 2: F-PATTERN SCANNING (KOLOM KIRI)
+   ========================================================================== */
+.main-desc h2 {
+  margin-top: var(--space-8);
+  margin-bottom: var(--space-4);
+  font-size: 1.6rem;
   font-weight: 800;
-  color: var(--color-text);
-  line-height: 1.25;
-  letter-spacing: -0.02em;
-  margin-bottom: 0.85rem;
+  color: var(--text-main);
+  border-left: 4px solid var(--primary);
+  padding-left: var(--space-3);
 }
 
-@media (min-width: 768px) {
-  .detail-title {
-    font-size: 2.25rem;
-  }
+.main-desc p {
+  color: var(--text-muted);
+  line-height: 1.8;
+  margin-bottom: var(--space-6);
+  font-size: 1.05rem;
 }
 
-/* Rating Row */
-.detail-rating-row {
+.agenda-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--space-8) 0;
+}
+
+.agenda-list li {
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.agenda-list li strong {
+  color: var(--text-main);
+}
+
+.review-summary-card {
+  padding: var(--space-6);
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
-  font-size: 0.9rem;
+  gap: var(--space-6);
+  background: white;
+  border-radius: var(--space-3);
 }
 
-.stars-wrap {
+.rating-large-score {
   display: flex;
+  align-items: baseline;
   gap: 2px;
 }
 
-.star-svg {
-  width: 17px;
-  height: 17px;
-  color: #f59e0b;
-}
-
-.star-svg.star-muted {
-  color: var(--color-border);
-}
-
-.detail-rating-score {
+.rating-num {
+  font-size: 2.8rem;
   font-weight: 800;
-  color: var(--color-text);
+  color: var(--primary);
+  line-height: 1;
 }
 
-.rating-dot {
-  color: var(--color-text-muted);
-}
-
-.detail-review-count {
-  color: var(--color-text-secondary);
-  font-weight: 500;
-}
-
-.terjual-text {
-  color: var(--color-primary);
+.rating-max {
+  font-size: 1.1rem;
+  color: var(--text-muted);
   font-weight: 600;
 }
 
-/* Price Box */
-.detail-price-box {
-  background-color: var(--color-surface-alt);
-  border-radius: var(--radius-lg);
-  padding: 1.25rem 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
+.rating-highlight {
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 4px;
 }
 
-@media (min-width: 640px) {
-  .detail-price-box {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
+.rating-sub {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0;
 }
 
-.price-wrap {
-  display: flex;
-  align-items: baseline;
-  gap: 0.85rem;
+/* ==========================================================================
+   MODUL 2: FOCAL POINT & STICKY PANE (KOLOM KANAN)
+   ========================================================================== */
+.ticket-card {
+  background: white;
+  padding: var(--space-8);
+  border-radius: var(--space-4);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+  text-align: center;
 }
 
-.detail-current-price {
-  font-size: 1.85rem;
+/* STICKY BEHAVIOR: Panel menempel saat halaman di-scroll */
+.sticky-pane {
+  position: sticky;
+  top: 100px;
+}
+
+.pane-tag {
+  font-size: 0.72rem;
   font-weight: 800;
-  color: var(--color-primary);
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.pane-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-top: var(--space-1);
+  margin-bottom: var(--space-2);
+}
+
+.price {
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: var(--space-1);
   letter-spacing: -0.02em;
 }
 
-.detail-original-price {
-  font-size: 1.05rem;
-  color: var(--color-text-muted);
+.original-price-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.price-strikethrough {
+  font-size: 0.95rem;
+  color: var(--text-muted);
   text-decoration: line-through;
 }
 
-.stock-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #15803d;
-  background-color: #dcfce7;
-  padding: 0.35rem 0.75rem;
-  border-radius: var(--radius-full);
-}
-
-.stock-pill.warning {
-  color: #b45309;
-  background-color: #fef3c7;
-}
-
-.stock-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background-color: currentColor;
-}
-
-/* Description */
-.detail-desc-box {
-  margin-bottom: 1.5rem;
-}
-
-.desc-heading {
-  font-size: 1.05rem;
+.discount-badge {
+  background: #fef2f2;
+  color: #ef4444;
+  font-size: 0.75rem;
   font-weight: 700;
-  color: var(--color-text);
-  margin-bottom: 0.5rem;
+  padding: 2px 6px;
+  border-radius: 4px;
 }
 
-.desc-text {
-  font-size: 0.95rem;
-  color: var(--color-text-secondary);
-  line-height: 1.65;
-}
-
-/* Features */
-.detail-features-box {
-  margin-bottom: 2rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--color-border);
-}
-
-.features-heading {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--color-text);
-  margin-bottom: 0.75rem;
-}
-
-.features-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.feature-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
+.ticket-desc {
+  color: var(--text-muted);
   font-size: 0.9rem;
-  color: var(--color-text-secondary);
+  margin-bottom: var(--space-6);
 }
 
-.check-icon {
-  width: 18px;
-  height: 18px;
-  color: var(--color-primary);
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-/* Purchase Section */
-.purchase-section {
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--color-border);
-  margin-bottom: 1.5rem;
-}
-
-.qty-control-row {
+.qty-section {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 1.25rem;
-  margin-bottom: 1.5rem;
+  justify-content: space-between;
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: var(--space-4);
 }
 
-.qty-label {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--color-text);
+.qty-heading {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-main);
 }
 
 .qty-selector {
   display: inline-flex;
   align-items: center;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background-color: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--space-2);
   overflow: hidden;
 }
 
 .qty-btn {
-  width: 38px;
-  height: 38px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--color-surface-alt);
-  color: var(--color-text);
-  transition: background-color var(--transition-fast);
+  width: 34px;
+  height: 34px;
+  border: none;
+  background: var(--color-surface-alt);
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  transition: background 0.2s;
 }
 
 .qty-btn:hover:not(:disabled) {
-  background-color: var(--color-border);
+  background: #e2e8f0;
 }
 
 .qty-btn:disabled {
@@ -677,144 +684,138 @@ function handleBuyNow() {
   cursor: not-allowed;
 }
 
-.qty-icon {
-  width: 16px;
-  height: 16px;
-}
-
 .qty-input {
-  width: 50px;
-  height: 38px;
+  width: 44px;
+  height: 34px;
   text-align: center;
   border: none;
   font-weight: 700;
   font-size: 0.95rem;
-  color: var(--color-text);
+  color: var(--text-main);
   outline: none;
 }
 
-/* Remove spin buttons */
-.qty-input::-webkit-outer-spin-button,
-.qty-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-.subtotal-calc {
-  font-size: 0.95rem;
-  color: var(--color-text-secondary);
-}
-
-.subtotal-calc strong {
-  color: var(--color-primary);
-  font-size: 1.05rem;
-}
-
-.detail-action-buttons {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.75rem;
-  margin-bottom: 1.25rem;
-}
-
-@media (min-width: 640px) {
-  .detail-action-buttons {
-    grid-template-columns: 1.5fr 1fr;
-  }
-}
-
-.btn-add-cart-detail {
-  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.28);
-}
-
-.btn-icon {
-  width: 20px;
-  height: 20px;
-}
-
-.back-link-wrap {
-  margin-top: 0.75rem;
-}
-
-.back-link {
-  display: inline-flex;
+.subtotal-display {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 0.5rem;
-  color: var(--color-text-secondary);
+  margin-bottom: var(--space-6);
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.subtotal-display strong {
+  font-size: 1.15rem;
+  color: var(--text-main);
+}
+
+/* SQUINT TEST: Kontras tertinggi yang memikat perhatian pengguna */
+.btn-register {
+  width: 100%;
+  padding: var(--space-4);
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.35);
+  transition: all 0.2s ease;
+  margin-bottom: var(--space-3);
+}
+
+.btn-register:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(37, 99, 235, 0.45);
+}
+
+.btn-buy-secondary {
+  width: 100%;
+  padding: var(--space-3);
+  background: white;
+  color: var(--primary);
+  border: 1.5px solid var(--primary);
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-buy-secondary:hover {
+  background: rgba(37, 99, 235, 0.05);
+}
+
+.spots {
+  margin-top: var(--space-4);
   font-weight: 600;
-  font-size: 0.9rem;
-  text-decoration: none;
-  transition: color var(--transition-fast), transform var(--transition-fast);
+  font-size: 0.88rem;
+  color: #e63946;
 }
 
-.back-link:hover {
-  color: var(--color-primary);
-  transform: translateX(-3px);
+.spots.in-stock {
+  color: #10b981;
 }
 
-.back-arrow {
-  width: 16px;
-  height: 16px;
+.trust-perks-list {
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px dashed var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  text-align: left;
 }
 
-/* Guarantee row */
-.guarantee-row {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.75rem;
-  padding: 1rem;
-  background-color: var(--color-surface-alt);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-}
-
-@media (min-width: 640px) {
-  .guarantee-row {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.guarantee-item {
+.perk-item {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--color-text-secondary);
+  gap: var(--space-2);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 500;
 }
 
-.g-icon {
-  width: 18px;
-  height: 18px;
-  color: var(--color-primary);
+.perk-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--primary);
   flex-shrink: 0;
 }
 
-/* Related section */
+/* Related Products Grid (Adaptive Grid) */
 .related-section {
-  margin-top: 3.5rem;
+  margin-top: var(--space-16);
+  padding-top: var(--space-12);
+  border-top: 1px solid var(--border-color);
 }
 
-.products-grid {
+.view-all-link {
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+
+.adaptive-products-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-}
-
-@media (min-width: 640px) {
-  .products-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 1024px) {
-  .products-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-6);
 }
 
 .not-found-container {
   max-width: 600px;
-  margin: 3rem auto;
+  margin: var(--space-12) auto;
+}
+
+@media (max-width: 900px) {
+  .grid-asymmetric {
+    grid-template-columns: 1fr;
+  }
+  .sticky-pane {
+    position: static;
+  }
 }
 </style>

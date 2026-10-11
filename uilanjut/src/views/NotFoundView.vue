@@ -5,9 +5,9 @@ import EmptyState from '@/components/EmptyState.vue'
 <template>
   <div class="not-found-view section">
     <div class="container not-found-container">
-      <EmptyState 
-        title="Halaman Tidak Ditemukan (404)" 
-        message="Halaman atau rute yang Anda tuju tidak tersedia di struktur Site Map SHOPNEST. Silakan kembali ke Beranda utama." 
+      <EmptyState
+        title="Halaman Tidak Ditemukan (404)"
+        message="Halaman atau rute yang Anda tuju tidak tersedia di struktur Site Map SHOPNEST. Silakan kembali ke Beranda utama."
         icon="404"
         action-text="Kembali ke Beranda"
         action-to="/"

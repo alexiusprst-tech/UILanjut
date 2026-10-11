@@ -14,10 +14,7 @@ const isCheckoutSuccess = ref(false)
 const checkoutInvoice = ref('')
 const checkoutDate = ref('')
 
-const breadcrumbItems = [
-  { label: 'Beranda', to: '/' },
-  { label: 'Keranjang Belanja' },
-]
+const breadcrumbItems = [{ label: 'Beranda', to: '/' }, { label: 'Keranjang Belanja' }]
 
 function handleApplyVoucher() {
   const success = cartStore.applyVoucher(inputVoucher.value)
@@ -82,11 +79,7 @@ function goToProfile() {
             </div>
 
             <div class="items-list">
-              <div 
-                v-for="item in cartStore.items" 
-                :key="item.product.id" 
-                class="cart-item-row"
-              >
+              <div v-for="item in cartStore.items" :key="item.product.id" class="cart-item-row">
                 <!-- Product Info -->
                 <div class="item-product-info">
                   <RouterLink :to="`/products/${item.product.id}`" class="item-thumb-link">
@@ -111,26 +104,44 @@ function goToProfile() {
                 <!-- Quantity Controls -->
                 <div class="item-quantity-control">
                   <div class="qty-stepper">
-                    <button 
-                      type="button" 
-                      class="stepper-btn" 
+                    <button
+                      type="button"
+                      class="stepper-btn"
                       @click="cartStore.decrementQuantity(item.product.id)"
                       aria-label="Kurangi jumlah"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="stepper-icon">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="2"
+                        stroke="currentColor"
+                        class="stepper-icon"
+                      >
                         <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14" />
                       </svg>
                     </button>
                     <span class="stepper-value">{{ item.quantity }}</span>
-                    <button 
-                      type="button" 
-                      class="stepper-btn" 
+                    <button
+                      type="button"
+                      class="stepper-btn"
                       :disabled="item.quantity >= item.product.stock"
                       @click="cartStore.incrementQuantity(item.product.id)"
                       aria-label="Tambah jumlah"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="stepper-icon">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="2"
+                        stroke="currentColor"
+                        class="stepper-icon"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M12 4.5v15m7.5-7.5h-15"
+                        />
                       </svg>
                     </button>
                   </div>
@@ -143,15 +154,26 @@ function goToProfile() {
 
                 <!-- Delete Action -->
                 <div class="item-delete-col">
-                  <button 
-                    type="button" 
-                    class="btn-delete-item" 
+                  <button
+                    type="button"
+                    class="btn-delete-item"
                     @click="cartStore.removeFromCart(item.product.id)"
                     title="Hapus produk"
                     aria-label="Hapus produk"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="delete-icon">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="2"
+                      stroke="currentColor"
+                      class="delete-icon"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                      />
                     </svg>
                   </button>
                 </div>
@@ -161,8 +183,19 @@ function goToProfile() {
             <!-- Footer Actions -->
             <div class="cart-items-footer">
               <RouterLink to="/products" class="btn btn-secondary btn-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="btn-icon">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  stroke="currentColor"
+                  class="btn-icon"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
+                  />
                 </svg>
                 <span>Lanjut Belanja Produk Lain</span>
               </RouterLink>
@@ -183,11 +216,11 @@ function goToProfile() {
             <div class="voucher-box">
               <label for="voucher-input" class="voucher-label">Kode Promo / Voucher</label>
               <div v-if="!cartStore.voucherCode" class="voucher-input-group">
-                <input 
+                <input
                   id="voucher-input"
-                  v-model="inputVoucher" 
-                  type="text" 
-                  placeholder="Contoh: SHOPHEMAT" 
+                  v-model="inputVoucher"
+                  type="text"
+                  placeholder="Contoh: SHOPHEMAT"
                   class="voucher-input"
                   @keyup.enter="handleApplyVoucher"
                 />
@@ -197,16 +230,29 @@ function goToProfile() {
               </div>
               <div v-else class="voucher-active-tag">
                 <div class="voucher-active-info">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="voucher-check-icon">
-                    <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.74-5.25Z" clip-rule="evenodd" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    class="voucher-check-icon"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.74-5.25Z"
+                      clip-rule="evenodd"
+                    />
                   </svg>
-                  <span>Kupon: <strong>{{ cartStore.voucherCode }}</strong></span>
+                  <span
+                    >Kupon: <strong>{{ cartStore.voucherCode }}</strong></span
+                  >
                 </div>
                 <button type="button" class="voucher-remove-btn" @click="cartStore.removeVoucher">
                   Hapus
                 </button>
               </div>
-              <p v-if="cartStore.voucherError" class="voucher-error-text">{{ cartStore.voucherError }}</p>
+              <p v-if="cartStore.voucherError" class="voucher-error-text">
+                {{ cartStore.voucherError }}
+              </p>
               <p class="voucher-hint">Gunakan kode <code>SHOPHEMAT</code> untuk diskon 10%</p>
             </div>
 
@@ -241,21 +287,43 @@ function goToProfile() {
             </div>
 
             <!-- Checkout Button -->
-            <button 
-              type="button" 
-              class="btn btn-primary btn-lg btn-full btn-checkout" 
+            <button
+              type="button"
+              class="btn btn-primary btn-lg btn-full btn-checkout"
               @click="handleCheckout"
             >
               <span>Proses Checkout</span>
-              <svg class="btn-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+              <svg
+                class="btn-arrow"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="2.5"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+                />
               </svg>
             </button>
 
             <!-- Security Assurance -->
             <div class="checkout-safety">
-              <svg class="safety-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+              <svg
+                class="safety-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"
+                />
               </svg>
               <span>Jaminan Transaksi Aman &amp; Terpercaya</span>
             </div>
@@ -265,9 +333,9 @@ function goToProfile() {
 
       <!-- State 2: Cart is Empty -->
       <div v-else class="empty-cart-container">
-        <EmptyState 
-          title="Keranjang kamu masih kosong." 
-          message="Belum ada produk yang ditambahkan ke keranjang belanja Anda. Jelajahi katalog kami dan temukan berbagai produk menarik sekarang." 
+        <EmptyState
+          title="Keranjang kamu masih kosong."
+          message="Belum ada produk yang ditambahkan ke keranjang belanja Anda. Jelajahi katalog kami dan temukan berbagai produk menarik sekarang."
           icon="cart"
           action-text="Mulai Belanja Sekarang"
           action-to="/products"
@@ -279,14 +347,24 @@ function goToProfile() {
         <div v-if="isCheckoutSuccess" class="modal-overlay">
           <div class="modal-card card animate-fade-in">
             <div class="modal-header-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="success-check-svg">
-                <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.74-5.25Z" clip-rule="evenodd" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                class="success-check-svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.74-5.25Z"
+                  clip-rule="evenodd"
+                />
               </svg>
             </div>
 
             <h3 class="modal-title">Pesanan Berhasil Dibuat!</h3>
             <p class="modal-desc">
-              Terima kasih telah berbelanja di SHOPNEST. Pesanan Anda telah diterima dan segera diproses.
+              Terima kasih telah berbelanja di SHOPNEST. Pesanan Anda telah diterima dan segera
+              diproses.
             </p>
 
             <!-- Order Receipt Box -->
