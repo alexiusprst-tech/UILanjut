@@ -15,9 +15,25 @@ defineProps({
     <ol class="breadcrumb-list">
       <li v-for="(item, index) in items" :key="index" class="breadcrumb-item">
         <!-- If item has a destination link and is not the last item -->
-        <RouterLink v-if="item.to && index < items.length - 1" :to="item.to" class="breadcrumb-link">
-          <svg v-if="index === 0" class="home-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+        <RouterLink
+          v-if="item.to && index < items.length - 1"
+          :to="item.to"
+          class="breadcrumb-link"
+        >
+          <svg
+            v-if="index === 0"
+            class="home-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+            />
           </svg>
           <span>{{ item.label }}</span>
         </RouterLink>
@@ -28,7 +44,15 @@ defineProps({
         </span>
 
         <!-- Separator slash icon -->
-        <svg v-if="index < items.length - 1" class="separator-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <svg
+          v-if="index < items.length - 1"
+          class="separator-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="currentColor"
+        >
           <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
         </svg>
       </li>

@@ -1,12 +1,22 @@
 <script setup>
-import { RouterView } from 'vue-router'
+import { computed } from 'vue'
+import { useRoute, RouterView } from 'vue-router'
 import Navbar from '@/components/Navbar.vue'
 import Footer from '@/components/Footer.vue'
 import ToastNotification from '@/components/ToastNotification.vue'
+
+const route = useRoute()
+const isDashboard = computed(() => route.meta.layout === 'dashboard')
 </script>
 
 <template>
-  <div id="app">
+  <!-- Modul 2: Layout 1 - Admin Toko Rail & Pane (Full 100vh Shell) -->
+  <div v-if="isDashboard" id="dashboard-app-wrapper">
+    <RouterView />
+  </div>
+
+  <!-- Layout 2 - Public Storefront Layout (Navbar, Main Content, Footer) -->
+  <div v-else id="app">
     <!-- Main Global Navbar -->
     <Navbar />
 
@@ -30,7 +40,9 @@ import ToastNotification from '@/components/ToastNotification.vue'
 <style scoped>
 .page-fade-enter-active,
 .page-fade-leave-active {
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
 }
 
 .page-fade-enter-from {

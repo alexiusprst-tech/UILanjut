@@ -5,9 +5,19 @@
 
 export const categories = [
   { id: 'all', name: 'Semua', icon: 'grid' },
-  { id: 'Electronics', name: 'Electronics', icon: 'cpu', description: 'Gadget & perangkat pintar berkualitas' },
+  {
+    id: 'Electronics',
+    name: 'Electronics',
+    icon: 'cpu',
+    description: 'Gadget & perangkat pintar berkualitas',
+  },
   { id: 'Fashion', name: 'Fashion', icon: 'shirt', description: 'Pakaian & gaya tren terkini' },
-  { id: 'Accessories', name: 'Accessories', icon: 'watch', description: 'Pelengkap gaya hidup harian' },
+  {
+    id: 'Accessories',
+    name: 'Accessories',
+    icon: 'watch',
+    description: 'Pelengkap gaya hidup harian',
+  },
   { id: 'Home', name: 'Home', icon: 'home', description: 'Perabot & kenyamanan rumah modern' },
 ]
 
@@ -24,13 +34,15 @@ export const products = [
     stock: 8,
     isFeatured: true,
     badge: 'Best Seller',
-    image: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=800&q=80',
+    image:
+      'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=800&q=80',
     ],
-    description: 'Laptop gaming ultra-portable dengan performa monster. Ditenagai prosesor AMD Ryzen 9 dan kartu grafis NVIDIA GeForce RTX 4060, layar OLED 120Hz ROG Nebula Display yang sangat tajam dan akurat untuk desainer maupun gamer profesional.',
+    description:
+      'Laptop gaming ultra-portable dengan performa monster. Ditenagai prosesor AMD Ryzen 9 dan kartu grafis NVIDIA GeForce RTX 4060, layar OLED 120Hz ROG Nebula Display yang sangat tajam dan akurat untuk desainer maupun gamer profesional.',
     features: [
       'Prosesor AMD Ryzen 9 7940HS Series',
       'Grafis NVIDIA GeForce RTX 4060 8GB GDDR6',
@@ -52,12 +64,14 @@ export const products = [
     stock: 24,
     isFeatured: true,
     badge: 'Populer',
-    image: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=800&q=80',
+    image:
+      'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&w=800&q=80',
     ],
-    description: 'Mouse ergonomis nirkabel paling ikonik dengan scroll wheel MagSpeed elektromagnetik yang super presisi dan klik senyap Quiet Clicks. Sensor 8.000 DPI yang dapat bekerja di semua permukaan kaca.',
+    description:
+      'Mouse ergonomis nirkabel paling ikonik dengan scroll wheel MagSpeed elektromagnetik yang super presisi dan klik senyap Quiet Clicks. Sensor 8.000 DPI yang dapat bekerja di semua permukaan kaca.',
     features: [
       'Quiet Clicks — 90% lebih hening dari generasi sebelumnya',
       'MagSpeed Scroll Wheel berkecepatan 1.000 baris per detik',
@@ -78,12 +92,14 @@ export const products = [
     stock: 14,
     isFeatured: true,
     badge: 'Trending',
-    image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=800&q=80',
+    image:
+      'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=800&q=80',
     ],
-    description: 'Keyboard mekanik nirkabel 75% QMK/VIA custom. Dilengkapi hot-swappable switch, keycaps double-shot PBT OSA profile, dan peredam suara busa acoustic foam untuk pengalaman mengetik yang renyah dan empuk.',
+    description:
+      'Keyboard mekanik nirkabel 75% QMK/VIA custom. Dilengkapi hot-swappable switch, keycaps double-shot PBT OSA profile, dan peredam suara busa acoustic foam untuk pengalaman mengetik yang renyah dan empuk.',
     features: [
       'Kustomisasi tombol tak terbatas via QMK/VIA Web App',
       'Hot-swappable PCB kompatibel switch 3-pin & 5-pin MX',
@@ -104,12 +120,14 @@ export const products = [
     stock: 9,
     isFeatured: true,
     badge: 'Diskon 10%',
-    image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80',
+    image:
+      'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=800&q=80',
     ],
-    description: 'Headset gaming nirkabel multi-platform dengan Almighty Audio dan driver speaker High Fidelity. Dilengkapi mikrofon ClearCast Gen 2 yang ditenagai Sonar AI Noise Cancellation.',
+    description:
+      'Headset gaming nirkabel multi-platform dengan Almighty Audio dan driver speaker High Fidelity. Dilengkapi mikrofon ClearCast Gen 2 yang ditenagai Sonar AI Noise Cancellation.',
     features: [
       'Sistem Akustik Nova dengan Driver Hi-Fi kustom',
       'Koneksi Simultan 2.4GHz Nirkabel dan Bluetooth',
@@ -130,12 +148,14 @@ export const products = [
     stock: 12,
     isFeatured: false,
     badge: 'Premium',
-    image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80',
+    image:
+      'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=800&q=80',
     ],
-    description: 'Smartwatch fitness GPS canggih dengan layar AMOLED 1.4 inci yang memukau. Dilengkapi fitur Sleep Coach, Body Battery Energy Monitoring, dan speaker/mic built-in untuk panggilan suara langsung dari pergelangan tangan.',
+    description:
+      'Smartwatch fitness GPS canggih dengan layar AMOLED 1.4 inci yang memukau. Dilengkapi fitur Sleep Coach, Body Battery Energy Monitoring, dan speaker/mic built-in untuk panggilan suara langsung dari pergelangan tangan.',
     features: [
       'Layar Sentuh AMOLED 1.4 inci Always-On Display',
       'Baterai tahan hingga 14 hari dalam mode smartwatch',
@@ -156,12 +176,14 @@ export const products = [
     stock: 35,
     isFeatured: false,
     badge: 'Favorit',
-    image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=800&q=80',
+    image:
+      'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?auto=format&fit=crop&w=800&q=80',
     ],
-    description: 'Tas ransel urban berkapasitas 25 liter berbahan kain Cordura tahan air (water repellent). Dilengkapi kompartemen empuk khusus laptop hingga ukuran 16 inci, port pengisian USB eksternal, dan desain ergonomis anti-pegal.',
+    description:
+      'Tas ransel urban berkapasitas 25 liter berbahan kain Cordura tahan air (water repellent). Dilengkapi kompartemen empuk khusus laptop hingga ukuran 16 inci, port pengisian USB eksternal, dan desain ergonomis anti-pegal.',
     features: [
       'Material High-Grade Cordura Ballistic Nylon Water-Repellent',
       'Kompartemen empuk laptop 16 inci + tablet pocket',
@@ -182,12 +204,14 @@ export const products = [
     stock: 20,
     isFeatured: false,
     badge: 'ANC Pro',
-    image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=800&q=80',
+    image:
+      'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1608156639585-b3a032ef9689?auto=format&fit=crop&w=800&q=80',
     ],
-    description: 'Earbuds TWS nirkabel dengan Active Noise Cancellation hybrid tingkat lanjut yang mampu meredam suara bising lingkungan hingga 45dB. Menghadirkan audio spasial 3D resolusi tinggi Hi-Res LDAC.',
+    description:
+      'Earbuds TWS nirkabel dengan Active Noise Cancellation hybrid tingkat lanjut yang mampu meredam suara bising lingkungan hingga 45dB. Menghadirkan audio spasial 3D resolusi tinggi Hi-Res LDAC.',
     features: [
       'Hybrid ANC Peredam Bising Aktif adaptif hingga 45dB',
       'Driver Dinamis 11mm dengan sertifikasi Hi-Res Wireless',
@@ -208,12 +232,14 @@ export const products = [
     stock: 11,
     isFeatured: true,
     badge: 'Flagship',
-    image: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=800&q=80',
+    image:
+      'https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=80',
     ],
-    description: 'Ponsel pintar flagship dengan layar Dynamic AMOLED 2X 120Hz, kamera utama 108MP dengan OIS, prosesor 4nm super kencang, dan teknologi pengisian daya kilat 67W Super Fast Charging.',
+    description:
+      'Ponsel pintar flagship dengan layar Dynamic AMOLED 2X 120Hz, kamera utama 108MP dengan OIS, prosesor 4nm super kencang, dan teknologi pengisian daya kilat 67W Super Fast Charging.',
     features: [
       'Layar 6.7 inci Curved AMOLED 120Hz HDR10+',
       'Chipset Flagship Octa-core 4nm fabrikasi terdepan',
@@ -234,12 +260,14 @@ export const products = [
     stock: 42,
     isFeatured: false,
     badge: 'Fashion Pria',
-    image: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=800&q=80',
+    image:
+      'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=800&q=80',
     ],
-    description: 'Kemeja lengan panjang berbahan katun Oxford 100% premium dengan potongan modern slim-fit. Bahan lembut, sejuk dipakai seharian, serta mudah disetrika. Sangat cocok untuk gaya kasual maupun semi-formal ke kantor.',
+    description:
+      'Kemeja lengan panjang berbahan katun Oxford 100% premium dengan potongan modern slim-fit. Bahan lembut, sejuk dipakai seharian, serta mudah disetrika. Sangat cocok untuk gaya kasual maupun semi-formal ke kantor.',
     features: [
       '100% Katun Oxford Grade A breathable',
       'Potongan Slim-Fit modern proporsional',
@@ -260,11 +288,13 @@ export const products = [
     stock: 15,
     isFeatured: false,
     badge: 'Ergonomis',
-    image: 'https://images.unsplash.com/photo-1580481077195-c9902641029c?auto=format&fit=crop&w=800&q=80',
+    image:
+      'https://images.unsplash.com/photo-1580481077195-c9902641029c?auto=format&fit=crop&w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1580481077195-c9902641029c?auto=format&fit=crop&w=800&q=80',
     ],
-    description: 'Kursi kerja ergonomis dengan sandaran jaring mesh elastis yang menjaga sirkulasi udara punggung. Dilengkapi lumbar support yang dapat diatur ketinggiannya dan sandaran tangan 3D untuk kenyamanan kerja berjam-jam.',
+    description:
+      'Kursi kerja ergonomis dengan sandaran jaring mesh elastis yang menjaga sirkulasi udara punggung. Dilengkapi lumbar support yang dapat diatur ketinggiannya dan sandaran tangan 3D untuk kenyamanan kerja berjam-jam.',
     features: [
       'Bahan Breathable Korean Mesh elastis tinggi',
       'Lumbar Support 2D yang dapat disesuaikan',
@@ -285,11 +315,13 @@ export const products = [
     stock: 50,
     isFeatured: false,
     badge: 'RFID Protected',
-    image: 'https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&w=800&q=80',
+    image:
+      'https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&w=800&q=80',
     ],
-    description: 'Dompet kartu kulit asli (genuine top-grain leather) berdesain ramping dan elegan. Dilengkapi lapisan pelindung anti RFID untuk mencegah pencurian data kartu nirkabel.',
+    description:
+      'Dompet kartu kulit asli (genuine top-grain leather) berdesain ramping dan elegan. Dilengkapi lapisan pelindung anti RFID untuk mencegah pencurian data kartu nirkabel.',
     features: [
       '100% Kulit Sapi Asli Top-Grain Leather',
       'Pelindung RFID Blocking Technology bawaan',
@@ -310,11 +342,13 @@ export const products = [
     stock: 28,
     isFeatured: false,
     badge: 'Best Seller',
-    image: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=800&q=80',
+    image:
+      'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=800&q=80',
     ],
-    description: 'Diffuser aromaterapi ultrasonik berkapasitas 500ml dengan lampu LED 7 warna suasana. Mengubah minyak esensial menjadi uap halus yang menenangkan ruangan dan meningkatkan kualitas tidur.',
+    description:
+      'Diffuser aromaterapi ultrasonik berkapasitas 500ml dengan lampu LED 7 warna suasana. Mengubah minyak esensial menjadi uap halus yang menenangkan ruangan dan meningkatkan kualitas tidur.',
     features: [
       'Kapasitas tangki air 500ml hingga 12 jam pemakaian',
       'Lampu Mood LED 7 Warna dengan mode tidur senyap',
@@ -349,7 +383,5 @@ export function getFeaturedProducts() {
 // Get related products
 export function getRelatedProducts(currentId, category, limit = 4) {
   const numericId = Number(currentId)
-  return products
-    .filter((p) => p.id !== numericId && p.category === category)
-    .slice(0, limit)
+  return products.filter((p) => p.id !== numericId && p.category === category).slice(0, limit)
 }

@@ -4,10 +4,7 @@ import { userProfile } from '@/data/user'
 import { formatRupiah } from '@/data/products'
 import Breadcrumbs from '@/components/Breadcrumbs.vue'
 
-const breadcrumbItems = [
-  { label: 'Beranda', to: '/' },
-  { label: 'Profil Pengguna' },
-]
+const breadcrumbItems = [{ label: 'Beranda', to: '/' }, { label: 'Profil Pengguna' }]
 </script>
 
 <template>
@@ -32,14 +29,36 @@ const breadcrumbItems = [
             <p class="profile-joined">Bergabung sejak {{ userProfile.joinDate }}</p>
             <div class="profile-contact-pills">
               <span class="contact-pill">
-                <svg class="pill-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                <svg
+                  class="pill-icon"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"
+                  />
                 </svg>
                 {{ userProfile.email }}
               </span>
               <span class="contact-pill">
-                <svg class="pill-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
+                <svg
+                  class="pill-icon"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z"
+                  />
                 </svg>
                 {{ userProfile.phone }}
               </span>
@@ -73,20 +92,29 @@ const breadcrumbItems = [
           <div class="card order-card-wrapper">
             <div class="card-header-row">
               <div class="header-title-box">
-                <svg class="section-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                <svg
+                  class="section-icon"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+                  />
                 </svg>
                 <h2 class="card-title">Riwayat Pesanan</h2>
               </div>
-              <RouterLink to="/products" class="btn btn-outline btn-sm">
-                Belanja Lagi
-              </RouterLink>
+              <RouterLink to="/products" class="btn btn-outline btn-sm"> Belanja Lagi </RouterLink>
             </div>
 
             <div class="orders-list">
-              <div 
-                v-for="order in userProfile.orderHistory" 
-                :key="order.id" 
+              <div
+                v-for="order in userProfile.orderHistory"
+                :key="order.id"
                 class="order-item card"
               >
                 <!-- Order Top Bar -->
@@ -100,11 +128,7 @@ const breadcrumbItems = [
 
                 <!-- Order Items Thumbnails -->
                 <div class="order-products-list">
-                  <div 
-                    v-for="(pItem, pIdx) in order.items" 
-                    :key="pIdx" 
-                    class="order-product-row"
-                  >
+                  <div v-for="(pItem, pIdx) in order.items" :key="pIdx" class="order-product-row">
                     <img :src="pItem.image" :alt="pItem.name" class="order-item-img" />
                     <div class="order-item-info">
                       <span class="order-item-name">{{ pItem.name }}</span>
@@ -135,9 +159,24 @@ const breadcrumbItems = [
           <!-- Shipping Address Card -->
           <div class="card side-card">
             <div class="header-title-box">
-              <svg class="section-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+              <svg
+                class="section-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
+                />
               </svg>
               <h2 class="card-title">Alamat Pengiriman</h2>
             </div>
@@ -150,28 +189,39 @@ const breadcrumbItems = [
               <h3 class="recipient-name">{{ userProfile.address.recipient }}</h3>
               <p class="address-text">{{ userProfile.address.street }}</p>
               <p class="address-text">
-                {{ userProfile.address.district }}, {{ userProfile.address.city }}, {{ userProfile.address.province }} {{ userProfile.address.postalCode }}
+                {{ userProfile.address.district }}, {{ userProfile.address.city }},
+                {{ userProfile.address.province }} {{ userProfile.address.postalCode }}
               </p>
-              <p class="address-notes">
-                <strong>Catatan:</strong> {{ userProfile.address.notes }}
-              </p>
+              <p class="address-notes"><strong>Catatan:</strong> {{ userProfile.address.notes }}</p>
             </div>
           </div>
 
-          <!-- Site Map Destination Info Card -->
-          <div class="card side-card sitemap-info-card">
+          <!-- Customer Support Card -->
+          <div class="card side-card customer-support-card">
             <div class="header-title-box">
-              <svg class="section-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+              <svg
+                class="section-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z"
+                />
               </svg>
-              <h2 class="card-title">Status Site Map</h2>
+              <h2 class="card-title">Bantuan &amp; Layanan</h2>
             </div>
-            <p class="sitemap-text">
-              Halaman ini merupakan <strong>Destination Node (Profil)</strong> dalam Site Map SHOPNEST. Berada sejajar dengan Produk dan Keranjang dari Entry Point Beranda.
+            <p class="support-text">
+              Butuh bantuan dengan pesanan Anda? Tim customer support SHOPNEST siap membantu 24/7
+              melalui WhatsApp atau Email resmi.
             </p>
-            <div class="sitemap-mini-path">
-              <code>BERANDA &rarr; PROFIL</code>
-            </div>
+            <a href="mailto:support@shopnest.id" class="btn btn-outline btn-sm w-full">
+              Hubungi Bantuan
+            </a>
           </div>
         </div>
       </div>
@@ -537,27 +587,20 @@ const breadcrumbItems = [
   line-height: 1.4;
 }
 
-.sitemap-info-card {
+.customer-support-card {
   background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
-  border: 1.5px solid rgba(37, 99, 235, 0.2);
+  border: 1px solid rgba(37, 99, 235, 0.2);
 }
 
-.sitemap-text {
+.support-text {
   font-size: 0.88rem;
   color: var(--color-text-secondary);
   line-height: 1.5;
   margin-top: 0.75rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 1rem;
 }
 
-.sitemap-mini-path {
-  background-color: #ffffff;
-  border: 1px solid var(--color-border);
-  padding: 0.5rem 0.75rem;
-  border-radius: var(--radius-md);
-  font-size: 0.82rem;
-  color: var(--color-primary);
-  font-weight: 700;
-  display: inline-block;
+.w-full {
+  width: 100%;
 }
 </style>

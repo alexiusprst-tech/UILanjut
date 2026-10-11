@@ -3,7 +3,7 @@ import HomeView from '../views/HomeView.vue'
 
 /**
  * Site Map Router SHOPNEST — Online Store
- * 
+ *
  * Struktur Navigasi:
  * HOME ( / )
  * ├── PRODUCTS ( /products )
@@ -60,6 +60,51 @@ const router = createRouter({
       component: () => import('../views/ProfileView.vue'),
       meta: {
         title: 'Profil Pengguna — SHOPNEST',
+      },
+    },
+    {
+      path: '/dashboard',
+      component: () => import('../layouts/DashboardLayout.vue'),
+      children: [
+        {
+          path: '',
+          name: 'dashboard-overview',
+          component: () => import('../views/admin/AdminOverviewView.vue'),
+          meta: {
+            title: 'Ringkasan Toko — Admin SHOPNEST',
+            layout: 'dashboard',
+          },
+        },
+        {
+          path: 'products',
+          name: 'admin-products',
+          component: () => import('../views/admin/AdminProductsView.vue'),
+          meta: {
+            title: 'Kelola Produk — Admin SHOPNEST',
+            layout: 'dashboard',
+          },
+        },
+        {
+          path: 'orders',
+          name: 'admin-orders',
+          component: () => import('../views/admin/AdminOrdersView.vue'),
+          meta: {
+            title: 'Pesanan Masuk — Admin SHOPNEST',
+            layout: 'dashboard',
+          },
+        },
+        {
+          path: 'settings',
+          name: 'admin-settings',
+          component: () => import('../views/admin/AdminSettingsView.vue'),
+          meta: {
+            title: 'Pengaturan Toko — Admin SHOPNEST',
+            layout: 'dashboard',
+          },
+        },
+      ],
+      meta: {
+        layout: 'dashboard',
       },
     },
     {

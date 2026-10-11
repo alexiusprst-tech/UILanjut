@@ -24,7 +24,7 @@ export const useCartStore = defineStore('cart', () => {
     (newItems) => {
       localStorage.setItem('shopnest_cart', JSON.stringify(newItems))
     },
-    { deep: true }
+    { deep: true },
   )
 
   // Computed values

@@ -35,7 +35,7 @@ watch(
     if (newQuery.q !== undefined) {
       searchQuery.value = newQuery.q
     }
-  }
+  },
 )
 
 function setCategory(categoryId) {
@@ -62,9 +62,7 @@ const filteredProducts = computed(() => {
 
   // Filter by category
   if (selectedCategory.value && selectedCategory.value !== 'all') {
-    result = result.filter(
-      (p) => p.category.toLowerCase() === selectedCategory.value.toLowerCase()
-    )
+    result = result.filter((p) => p.category.toLowerCase() === selectedCategory.value.toLowerCase())
   }
 
   // Filter by search query
@@ -74,7 +72,7 @@ const filteredProducts = computed(() => {
       (p) =>
         p.name.toLowerCase().includes(q) ||
         p.description.toLowerCase().includes(q) ||
-        p.category.toLowerCase().includes(q)
+        p.category.toLowerCase().includes(q),
     )
   }
 
@@ -115,7 +113,8 @@ const breadcrumbItems = computed(() => {
         <div>
           <h1 class="catalog-title">Daftar Produk</h1>
           <p class="catalog-subtitle">
-            Jelajahi seluruh koleksi produk berkualitas SHOPNEST dengan garansi resmi dan pengiriman aman.
+            Jelajahi seluruh koleksi produk berkualitas SHOPNEST dengan garansi resmi dan pengiriman
+            aman.
           </p>
         </div>
         <div class="results-count-badge">
@@ -128,23 +127,41 @@ const breadcrumbItems = computed(() => {
         <div class="controls-grid">
           <!-- Search Input -->
           <div class="search-input-wrap">
-            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            <svg
+              class="search-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+              />
             </svg>
-            <input 
-              v-model="searchQuery" 
-              type="text" 
-              placeholder="Cari nama produk, spesifikasi, atau kategori..." 
+            <input
+              v-model="searchQuery"
+              type="text"
+              placeholder="Cari nama produk, spesifikasi, atau kategori..."
               class="search-input"
             />
-            <button 
-              v-if="searchQuery" 
-              type="button" 
-              class="clear-search-btn" 
+            <button
+              v-if="searchQuery"
+              type="button"
+              class="clear-search-btn"
               @click="searchQuery = ''"
               aria-label="Hapus kata kunci pencarian"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="clear-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+                class="clear-icon"
+              >
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
               </svg>
             </button>
@@ -167,12 +184,15 @@ const breadcrumbItems = computed(() => {
         <div class="category-pills-row">
           <span class="category-label">Kategori:</span>
           <div class="category-pills">
-            <button 
-              v-for="cat in categories" 
-              :key="cat.id" 
+            <button
+              v-for="cat in categories"
+              :key="cat.id"
               type="button"
-              class="cat-pill" 
-              :class="{ 'active': selectedCategory === cat.id || (cat.id === 'all' && selectedCategory === 'all') }"
+              class="cat-pill"
+              :class="{
+                active:
+                  selectedCategory === cat.id || (cat.id === 'all' && selectedCategory === 'all'),
+              }"
               @click="setCategory(cat.id)"
             >
               {{ cat.name }}
@@ -183,18 +203,14 @@ const breadcrumbItems = computed(() => {
 
       <!-- Products Grid -->
       <div v-if="filteredProducts.length > 0" class="products-grid">
-        <ProductCard 
-          v-for="product in filteredProducts" 
-          :key="product.id" 
-          :product="product" 
-        />
+        <ProductCard v-for="product in filteredProducts" :key="product.id" :product="product" />
       </div>
 
       <!-- Empty State If No Results Found -->
       <div v-else class="empty-results-container">
-        <EmptyState 
-          title="Produk Tidak Ditemukan" 
-          message="Maaf, tidak ada produk yang cocok dengan pencarian atau filter yang Anda pilih. Coba gunakan kata kunci lain." 
+        <EmptyState
+          title="Produk Tidak Ditemukan"
+          message="Maaf, tidak ada produk yang cocok dengan pencarian atau filter yang Anda pilih. Coba gunakan kata kunci lain."
           icon="search"
           action-text="Reset Semua Filter"
           @click="clearFilters"
@@ -404,23 +420,15 @@ const breadcrumbItems = computed(() => {
   box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
 }
 
-/* Products Grid */
+/* ==========================================================================
+   MODUL 2: ADAPTIVE GRID (auto-fill)
+   Responsif otomatis menyesuaikan lebar layar (4, 3, 2, atau 1 kolom)
+   tanpa perlu koding Media Query yang rumit.
+   ========================================================================== */
 .products-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-}
-
-@media (min-width: 640px) {
-  .products-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 1024px) {
-  .products-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-6);
 }
 
 .empty-results-container {

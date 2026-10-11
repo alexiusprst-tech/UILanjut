@@ -11,7 +11,8 @@ export const userProfile = {
   points: 5420,
   couponsCount: 3,
   joinDate: '15 Januari 2024',
-  avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+  avatar:
+    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
   address: {
     label: 'Alamat Utama (Rumah)',
     recipient: 'Budi Pratama (+62 812-3456-7890)',
@@ -35,7 +36,8 @@ export const userProfile = {
           name: 'Mechanical Keyboard Keychron K2 Pro',
           quantity: 1,
           price: 1699000,
-          image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=400&q=80',
+          image:
+            'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=400&q=80',
         },
       ],
     },
@@ -51,13 +53,15 @@ export const userProfile = {
           name: 'Wireless Mouse Logitech MX Master 3S',
           quantity: 1,
           price: 1450000,
-          image: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=400&q=80',
+          image:
+            'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=400&q=80',
         },
         {
           name: 'Minimalist Urban Backpack 25L Waterproof',
           quantity: 1,
           price: 489000,
-          image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=400&q=80',
+          image:
+            'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=400&q=80',
         },
       ],
     },
@@ -73,7 +77,8 @@ export const userProfile = {
           name: 'Casual Oxford Cotton Slim Shirt',
           quantity: 1,
           price: 299000,
-          image: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=400&q=80',
+          image:
+            'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=400&q=80',
         },
       ],
     },
