@@ -289,9 +289,10 @@ export const products = [
     isFeatured: false,
     badge: 'Ergonomis',
     image:
-      'https://images.unsplash.com/photo-1580481077195-c9902641029c?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80',
     images: [
-      'https://images.unsplash.com/photo-1580481077195-c9902641029c?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&w=800&q=80',
     ],
     description:
       'Kursi kerja ergonomis dengan sandaran jaring mesh elastis yang menjaga sirkulasi udara punggung. Dilengkapi lumbar support yang dapat diatur ketinggiannya dan sandaran tangan 3D untuk kenyamanan kerja berjam-jam.',
@@ -355,6 +356,242 @@ export const products = [
       'Teknologi getaran ultrasonik 2.4 MHz super halus',
       'Fitur Auto-Off mati otomatis ketika air habis',
       'Termasuk Remote Control pengatur timer 1H/3H/6H',
+    ],
+  },
+  // ==========================================
+  // Kategori: Electronics (+2 Produk Baru)
+  // ==========================================
+  {
+    id: 13,
+    name: 'Tablet Pro Max 11-inch 128GB Wi-Fi',
+    slug: 'tablet-pro-max-11-inch-128gb-wifi',
+    category: 'Electronics',
+    price: 8499000,
+    originalPrice: 9299000,
+    rating: 4.9,
+    reviewsCount: 112,
+    stock: 16,
+    isFeatured: true,
+    badge: 'Best Tablet',
+    image:
+      'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1561154464-82e9adf32764?auto=format&fit=crop&w=800&q=80',
+    ],
+    description:
+      'Tablet multifungsi dengan layar Liquid Retina 11 inci 120Hz ProMotion yang memukau. Sangat bertenaga untuk ilustrasi digital, multitasking dokumen kantor, hingga editing video 4K dengan efisiensi daya luar biasa.',
+    features: [
+      'Layar 11 inci Liquid Retina 120Hz ProMotion Display',
+      'Chipset Octa-Core kencang dengan grafis 10-core',
+      'Mendukung Stylus Pen generasi ke-2 dan Magic Keyboard',
+      'Kamera depan Ultra Wide 12MP dengan Center Stage',
+      'Audio 4 Speaker stereo studio-quality',
+    ],
+  },
+  {
+    id: 14,
+    name: 'Wireless Portable Bluetooth Speaker Waterproof 30W',
+    slug: 'wireless-portable-bluetooth-speaker-waterproof',
+    category: 'Electronics',
+    price: 1199000,
+    originalPrice: 1450000,
+    rating: 4.8,
+    reviewsCount: 185,
+    stock: 25,
+    isFeatured: false,
+    badge: 'Bass Boost',
+    image:
+      'https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=800&q=80',
+    ],
+    description:
+      'Speaker Bluetooth portabel berdaya 30W RMS dengan dentuman bass mendalam dan sertifikasi tahan air IPX7. Desain kokoh tahan banting yang siap menemani petualangan outdoor maupun pesta musik di rumah.',
+    features: [
+      'Daya audio 30W RMS dengan dual passive radiator bass',
+      'Sertifikasi IPX7 tahan air hingga kedalaman 1 meter',
+      'Baterai 5.200 mAh memutar musik nonstop hingga 20 jam',
+      'Koneksi Bluetooth 5.3 jangkauan hingga 20 meter',
+      'Fitur PartyBoost untuk menghubungkan dua speaker bersamaan',
+    ],
+  },
+  // ==========================================
+  // Kategori: Fashion (+2 Produk Baru)
+  // ==========================================
+  {
+    id: 15,
+    name: 'Jaket Hoodie Fleece Oversized Japanese Streetwear',
+    slug: 'jaket-hoodie-fleece-oversized-japanese-streetwear',
+    category: 'Fashion',
+    price: 359000,
+    originalPrice: 459000,
+    rating: 4.8,
+    reviewsCount: 240,
+    stock: 30,
+    isFeatured: true,
+    badge: 'Best Hoodie',
+    image:
+      'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1509967419530-da38b4704bc6?auto=format&fit=crop&w=800&q=80',
+    ],
+    description:
+      'Hoodie streetwear berbahan katun fleece 330 gsm tebal dan hangat namun tetap sejuk di kulit. Potongan santai oversized dengan tudung ganda dan saku kanguru yang luas untuk kenyamanan maksimal gaya kasual harian.',
+    features: [
+      'Material Katun Heavyweight Fleece 330 GSM super lembut',
+      'Potongan Boxy Oversized khas Japanese Streetwear',
+      'Tudung Double-layered dengan tali serut logam tahan karat',
+      'Karet rib elastis padat pada pergelangan tangan dan pinggang',
+      'Sablon plastisol premium tidak mudah retak atau luntur',
+    ],
+  },
+  {
+    id: 16,
+    name: 'Sepatu Sneakers Classic Canvas Low White',
+    slug: 'sepatu-sneakers-classic-canvas-low-white',
+    category: 'Fashion',
+    price: 429000,
+    originalPrice: 520000,
+    rating: 4.7,
+    reviewsCount: 198,
+    stock: 38,
+    isFeatured: false,
+    badge: 'Unisex',
+    image:
+      'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=800&q=80',
+    ],
+    description:
+      'Sneakers kanvas klasik dengan sol vulkanisir karet alami yang fleksibel dan awet. Menggunakan insole empuk berbahan memory foam yang nyaman dipakai jalan santai, kuliah, hingga aktivitas nongkrong seharian.',
+    features: [
+      'Bahan 12oz Premium Cotton Canvas tahan gesek',
+      'Insole bantalan Memory Foam anti-pegal empuk',
+      'Outsole Rubber Vulcanized grip anti-slip di lantai licin',
+      'Desain timeless netral cocok dipadukan pakaian apa pun',
+      'Tersedia ukuran 38 hingga 44',
+    ],
+  },
+  // ==========================================
+  // Kategori: Accessories (+2 Produk Baru)
+  // ==========================================
+  {
+    id: 17,
+    name: 'Jam Tangan Pria Chronograph Leather Strap Luxury',
+    slug: 'jam-tangan-chronograph-leather-strap-luxury',
+    category: 'Accessories',
+    price: 899000,
+    originalPrice: 1199000,
+    rating: 4.9,
+    reviewsCount: 176,
+    stock: 18,
+    isFeatured: true,
+    badge: 'Eksklusif',
+    image:
+      'https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=800&q=80',
+    ],
+    description:
+      'Jam tangan analog chronograph dengan dial safir anti-gores dan tali kulit sapi asli bertekstur elegan. Ditenagai movement kuarsa presisi tinggi dari Jepang dengan fungsi stopwatch aktif dan ketahanan air hingga 50 meter.',
+    features: [
+      'Kaca Sapphire Crystal Glass tahan goresan tajam',
+      'Tali Kulit Sapi Asli Genuine Leather dengan gesper baja tahan karat',
+      'Japanese Quartz Chronograph Movement dengan 3 sub-dial aktif',
+      'Water Resistant 5 ATM (50 meter) aman untuk cuci tangan dan hujan',
+      'Luminova hands jarum berpendar terang dalam kegelapan',
+    ],
+  },
+  {
+    id: 18,
+    name: 'Kacamata Polarized UV400 Sunglasses Matte Black',
+    slug: 'kacamata-polarized-uv400-sunglasses-matte-black',
+    category: 'Accessories',
+    price: 249000,
+    originalPrice: 329000,
+    rating: 4.8,
+    reviewsCount: 225,
+    stock: 45,
+    isFeatured: false,
+    badge: 'UV400 Protected',
+    image:
+      'https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=800&q=80',
+    ],
+    description:
+      'Kacamata hitam berdesain modern dengan lensa polarized multi-layer yang mereduksi silau terik matahari secara maksimal. Memberikan perlindungan penuh UV400 dari sinar UVA/UVB untuk kegiatan berkendara, traveling, dan pantai.',
+    features: [
+      'Lensa TAC Polarized 9-Layer anti-glare dan pantulan air',
+      'Perlindungan 100% UV400 memblokir sinar radiasi berbahaya',
+      'Bingkai Polycarbonate ultralight hanya berbobot 22 gram',
+      'Engsel baja fleksibel tahan patah dan nyaman di berbagai bentuk wajah',
+      'Termasuk hardcase kulit, pouch microfiber, dan lap pembersih',
+    ],
+  },
+  // ==========================================
+  // Kategori: Home (+2 Produk Baru)
+  // ==========================================
+  {
+    id: 19,
+    name: 'Lampu Meja LED Smart Desk Lamp Wireless Charging',
+    slug: 'lampu-meja-led-smart-desk-lamp-wireless-charging',
+    category: 'Home',
+    price: 399000,
+    originalPrice: 499000,
+    rating: 4.9,
+    reviewsCount: 132,
+    stock: 22,
+    isFeatured: false,
+    badge: 'Smart Lighting',
+    image:
+      'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=800&q=80',
+    ],
+    description:
+      'Lampu meja belajar minimalis dengan pengaturan temperatur warna (Warm, Natural, Cool) dan kecerahan stepless. Dilengkapi bantalan pengisian daya cepat nirkabel 10W (Qi Wireless Charger) pada alasnya untuk mengisi daya smartphone Anda.',
+    features: [
+      'Fast Wireless Charging Pad 10W terintegrasi di dasar lampu',
+      '3 Mode Temperatur Warna (3000K, 4500K, 6000K) + Stepless Dimming',
+      'Teknologi Eye-Care Anti Blue-Light & Flicker-Free tanpa radiasi mata',
+      'Leher lampu fleksibel silikon dapat ditekuk bebas 360 derajat',
+      'Fitur timer otomatis 45 menit untuk istirahat mata berkala',
+    ],
+  },
+  {
+    id: 20,
+    name: 'Electric Kettle Gooseneck Smart Temperature Control 1L',
+    slug: 'electric-kettle-gooseneck-smart-temperature-control',
+    category: 'Home',
+    price: 589000,
+    originalPrice: 699000,
+    rating: 4.8,
+    reviewsCount: 94,
+    stock: 15,
+    isFeatured: false,
+    badge: 'Barista Choice',
+    image:
+      'https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1517256064527-09c73fc73e38?auto=format&fit=crop&w=800&q=80',
+    ],
+    description:
+      'Teko listrik leher angsa presisi berbahan stainless steel SUS304 food-grade. Dirancang khusus untuk pecinta kopi manual brew dan teh dengan layar LED digital pengatur suhu presisi per 1 derajat Celsius serta fitur penjaga suhu (Keep Warm).',
+    features: [
+      'Bahan Full Stainless Steel SUS304 Food-Grade bebas BPA',
+      'Cerat Leher Angsa (Gooseneck Spout) 90 derajat untuk aliran air presisi',
+      'Pengaturan Suhu Digital presisi 40°C hingga 100°C pada layar LED',
+      'Fitur Keep Warm otomatis menjaga suhu panas hingga 120 menit',
+      'Pemanasan cepat 1.000 Watt mendidihkan 1 liter air hanya dalam 4 menit',
     ],
   },
 ]

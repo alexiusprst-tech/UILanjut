@@ -6,6 +6,8 @@ import { useCartStore } from '@/stores/cart'
 import Breadcrumbs from '@/components/Breadcrumbs.vue'
 import ProductCard from '@/components/ProductCard.vue'
 import EmptyState from '@/components/EmptyState.vue'
+import AppCard from '@/components/ui/AppCard.vue'
+import AppButton from '@/components/ui/AppButton.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -93,6 +95,13 @@ function handleBuyNow() {
   cartStore.addToCart(product.value, quantity.value)
   router.push('/cart')
 }
+
+const fallbackImage =
+  'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=800&q=80'
+
+function onImgError(event) {
+  event.target.src = fallbackImage
+}
 </script>
 
 <template>
@@ -104,9 +113,9 @@ function handleBuyNow() {
       <!-- Case 1: Product Found -->
       <div v-if="product" class="product-detail-page">
         <!-- Detail Header -->
-        <button @click="$router.push('/products')" class="btn-back">
+        <AppButton variant="secondary" size="sm" class="btn-back" @click="$router.push('/products')">
           &larr; Kembali ke Daftar Produk
-        </button>
+        </AppButton>
 
         <div class="detail-header">
           <span class="product-tag-pill">{{ product.category }}</span>
@@ -136,6 +145,7 @@ function handleBuyNow() {
                   :src="product.images ? product.images[activeImageIndex] : product.image"
                   :alt="product.name"
                   class="main-product-image"
+                  @error="onImgError"
                 />
                 <span v-if="product.badge" class="detail-badge">{{ product.badge }}</span>
               </div>
@@ -150,7 +160,12 @@ function handleBuyNow() {
                   :class="{ active: activeImageIndex === idx }"
                   @click="activeImageIndex = idx"
                 >
-                  <img :src="img" :alt="`${product.name} thumb ${idx + 1}`" class="thumb-img" />
+                  <img
+                    :src="img"
+                    :alt="`${product.name} thumb ${idx + 1}`"
+                    class="thumb-img"
+                    @error="onImgError"
+                  />
                 </button>
               </div>
             </div>
@@ -199,7 +214,7 @@ function handleBuyNow() {
 
           <!-- FOCAL POINT & STICKY PANE: Kolom Kanan (1fr) -->
           <div class="sidebar">
-            <div class="ticket-card sticky-pane">
+            <AppCard :hoverable="false" class="ticket-card sticky-pane">
               <span class="pane-tag">TRANSAKSI LANGSUNG</span>
               <h3 class="pane-title">Atur Pesanan</h3>
 
@@ -249,12 +264,14 @@ function handleBuyNow() {
                 <strong>{{ formatRupiah(product.price * quantity) }}</strong>
               </div>
 
-              <!-- STRONGEST FOCAL POINT (Squint Test) -->
-              <button class="btn-register" @click="handleAddToCart">🛒 Tambah ke Keranjang</button>
+              <!-- STRONGEST FOCAL POINT (Squint Test) via AppButton -->
+              <AppButton variant="primary" size="lg" class="btn-register" @click="handleAddToCart">
+                🛒 Tambah ke Keranjang
+              </AppButton>
 
-              <button class="btn-buy-secondary" @click="handleBuyNow">
+              <AppButton variant="secondary" size="md" class="btn-buy-secondary" @click="handleBuyNow">
                 ⚡ Beli Sekarang Langsung
-              </button>
+              </AppButton>
 
               <p class="spots" v-if="product.stock <= 10">
                 ⚠️ Hanya tersisa {{ product.stock }} unit lagi!
@@ -298,7 +315,7 @@ function handleBuyNow() {
                   <span>Jaminan Retur 7 Hari Bebas Repot</span>
                 </div>
               </div>
-            </div>
+            </AppCard>
           </div>
         </div>
 

@@ -3,6 +3,8 @@ import { RouterLink } from 'vue-router'
 import { categories, getFeaturedProducts } from '@/data/products'
 import ProductCard from '@/components/ProductCard.vue'
 import CategoryCard from '@/components/CategoryCard.vue'
+import AppButton from '@/components/ui/AppButton.vue'
+import AppCard from '@/components/ui/AppCard.vue'
 
 const featuredProducts = getFeaturedProducts()
 const mainCategories = categories.filter((c) => c.id !== 'all')
@@ -30,7 +32,7 @@ const mainCategories = categories.filter((c) => c.id !== 'all')
           </p>
 
           <div class="hero-actions">
-            <RouterLink to="/products" class="btn btn-primary btn-lg hero-btn-primary">
+            <AppButton variant="primary" size="md" class="hero-btn-primary" @click="$router.push('/products')">
               <span>Belanja Sekarang</span>
               <svg
                 class="btn-arrow"
@@ -46,9 +48,9 @@ const mainCategories = categories.filter((c) => c.id !== 'all')
                   d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
                 />
               </svg>
-            </RouterLink>
+            </AppButton>
 
-            <RouterLink to="/cart" class="btn btn-secondary btn-lg hero-btn-secondary">
+            <AppButton variant="secondary" size="md" class="hero-btn-secondary" @click="$router.push('/cart')">
               <svg
                 class="cart-hero-icon"
                 xmlns="http://www.w3.org/2000/svg"
@@ -64,7 +66,7 @@ const mainCategories = categories.filter((c) => c.id !== 'all')
                 />
               </svg>
               <span>Lihat Keranjang</span>
-            </RouterLink>
+            </AppButton>
           </div>
 
           <!-- Trust Proof Metrics -->
@@ -123,7 +125,7 @@ const mainCategories = categories.filter((c) => c.id !== 'all')
     <section class="benefits-strip">
       <div class="container">
         <div class="benefits-grid">
-          <div class="benefit-card">
+          <AppCard class="benefit-card">
             <div class="benefit-icon">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -143,9 +145,9 @@ const mainCategories = categories.filter((c) => c.id !== 'all')
               <h4 class="benefit-title">Gratis Ongkos Kirim</h4>
               <p class="benefit-desc">Untuk seluruh pesanan minimal Rp 500.000</p>
             </div>
-          </div>
+          </AppCard>
 
-          <div class="benefit-card">
+          <AppCard class="benefit-card">
             <div class="benefit-icon">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -165,9 +167,9 @@ const mainCategories = categories.filter((c) => c.id !== 'all')
               <h4 class="benefit-title">100% Produk Original</h4>
               <p class="benefit-desc">Barang langsung dari distributor resmi</p>
             </div>
-          </div>
+          </AppCard>
 
-          <div class="benefit-card">
+          <AppCard class="benefit-card">
             <div class="benefit-icon">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -187,9 +189,9 @@ const mainCategories = categories.filter((c) => c.id !== 'all')
               <h4 class="benefit-title">Garansi Retur 7 Hari</h4>
               <p class="benefit-desc">Kemudahan pengembalian jika barang cacat</p>
             </div>
-          </div>
+          </AppCard>
 
-          <div class="benefit-card">
+          <AppCard class="benefit-card">
             <div class="benefit-icon">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -209,7 +211,7 @@ const mainCategories = categories.filter((c) => c.id !== 'all')
               <h4 class="benefit-title">Transaksi Aman &amp; Mudah</h4>
               <p class="benefit-desc">Dukungan berbagai metode pembayaran</p>
             </div>
-          </div>
+          </AppCard>
         </div>
       </div>
     </section>
@@ -262,22 +264,24 @@ const mainCategories = categories.filter((c) => c.id !== 'all')
               spesifikasinya.
             </p>
           </div>
-          <RouterLink to="/products" class="btn btn-outline">
-            <span>Buka Katalog Lengkap</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="2"
-              stroke="currentColor"
-              class="link-arrow"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
-              />
-            </svg>
+          <RouterLink to="/products" style="text-decoration: none;">
+            <AppButton variant="outline" size="sm">
+              <span>Buka Katalog Lengkap</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+                class="link-arrow"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+                />
+              </svg>
+            </AppButton>
           </RouterLink>
         </div>
 
@@ -396,15 +400,17 @@ const mainCategories = categories.filter((c) => c.id !== 'all')
   margin-bottom: var(--space-8);
 }
 
-/* SQUINT TEST: Make button pop with vibrant primary background & intense elevation */
+/* SQUINT TEST: Make button pop with vibrant primary background & crisp elevation */
 .hero-btn-primary {
   background-color: var(--color-primary);
   color: #ffffff;
-  font-size: 1.05rem;
-  font-weight: 700;
-  padding: var(--space-3) var(--space-8);
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.35);
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  padding: 0.7rem 1.4rem !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+  white-space: nowrap;
+  gap: 0.5rem;
   transition:
     transform 0.2s ease,
     background-color 0.2s ease,
@@ -414,12 +420,33 @@ const mainCategories = categories.filter((c) => c.id !== 'all')
 .hero-btn-primary:hover {
   background-color: var(--color-primary-hover);
   transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(37, 99, 235, 0.45);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+}
+
+.hero-btn-secondary {
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  padding: 0.7rem 1.4rem !important;
+  border-radius: 10px !important;
+  white-space: nowrap;
+  gap: 0.5rem;
+}
+
+.btn-arrow {
+  width: 1.1rem;
+  height: 1.1rem;
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.hero-btn-primary:hover .btn-arrow {
+  transform: translateX(3px);
 }
 
 .cart-hero-icon {
-  width: 20px;
-  height: 20px;
+  width: 1.1rem;
+  height: 1.1rem;
+  display: inline-block;
 }
 
 .hero-stats {
@@ -565,7 +592,9 @@ const mainCategories = categories.filter((c) => c.id !== 'all')
 .benefit-card {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.25rem;
+  padding: 1.25rem 1.4rem !important;
+  min-height: 84px;
 }
 
 .benefit-icon {
