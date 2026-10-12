@@ -2,6 +2,8 @@
 import { RouterLink } from 'vue-router'
 import { formatRupiah } from '@/data/products'
 import { useCartStore } from '@/stores/cart'
+import AppCard from '@/components/ui/AppCard.vue'
+import AppButton from '@/components/ui/AppButton.vue'
 
 const props = defineProps({
   product: {
@@ -10,20 +12,42 @@ const props = defineProps({
   },
 })
 
+const emit = defineEmits(['add-to-cart', 'view-detail'])
+
 const cartStore = useCartStore()
 
 function handleAddToCart(event) {
-  event.preventDefault()
-  event.stopPropagation()
+  if (event) {
+    event.preventDefault()
+    event.stopPropagation()
+  }
   cartStore.addToCart(props.product, 1)
+  emit('add-to-cart', props.product)
+}
+
+function handleViewDetail() {
+  emit('view-detail', props.product.id)
+}
+
+const fallbackImage =
+  'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=800&q=80'
+
+function onImageError(event) {
+  event.target.src = fallbackImage
 }
 </script>
 
 <template>
-  <div class="product-card card card-hover">
+  <AppCard class="product-card">
     <!-- Image Area with Router Link -->
-    <RouterLink :to="`/products/${product.id}`" class="product-image-wrap">
-      <img :src="product.image" :alt="product.name" class="product-image" loading="lazy" />
+    <RouterLink :to="`/products/${product.id}`" class="product-image-wrap" @click="handleViewDetail">
+      <img
+        :src="product.image"
+        :alt="product.name"
+        class="product-image"
+        loading="lazy"
+        @error="onImageError"
+      />
       <span v-if="product.badge" class="product-tag">{{ product.badge }}</span>
       <span v-else class="product-category-tag">{{ product.category }}</span>
     </RouterLink>
@@ -53,7 +77,7 @@ function handleAddToCart(event) {
 
       <!-- Product Title -->
       <h3 class="product-title">
-        <RouterLink :to="`/products/${product.id}`" class="title-link">
+        <RouterLink :to="`/products/${product.id}`" class="title-link" @click="handleViewDetail">
           {{ product.name }}
         </RouterLink>
       </h3>
@@ -71,32 +95,34 @@ function handleAddToCart(event) {
         </span>
       </div>
 
-      <!-- Action Buttons -->
+      <!-- Action Buttons via Universal AppButton -->
       <div class="product-actions">
-        <RouterLink :to="`/products/${product.id}`" class="btn btn-secondary btn-sm btn-detail">
-          <span>Lihat Detail</span>
-          <svg
-            class="arrow-icon"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="2"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
-            />
-          </svg>
+        <RouterLink :to="`/products/${product.id}`" class="detail-link-wrap" @click="handleViewDetail">
+          <AppButton variant="secondary" size="sm" class="btn-detail-app">
+            <span>Detail</span>
+            <svg
+              class="arrow-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+              />
+            </svg>
+          </AppButton>
         </RouterLink>
 
-        <button
-          type="button"
-          class="btn btn-primary btn-sm btn-add-cart"
-          @click="handleAddToCart"
+        <AppButton
+          variant="primary"
+          size="sm"
+          class="btn-add-cart-app"
           title="Tambah ke Keranjang"
-          aria-label="Tambah ke Keranjang"
+          @click="handleAddToCart"
         >
           <svg
             class="cart-btn-icon"
@@ -109,35 +135,17 @@ function handleAddToCart(event) {
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
           </svg>
           <span>Keranjang</span>
-        </button>
+        </AppButton>
       </div>
     </div>
-  </div>
+  </AppCard>
 </template>
 
 <style scoped>
-/* ==========================================================================
-   MODUL 2: COMMON REGIONS & PROXIMITY
-   Menciptakan batas visual (border, radius, shadow) agar otak pengguna
-   otomatis menyatukan elemen produk menjadi satu kesatuan kognitif terpisah.
-   ========================================================================== */
 .product-card {
-  background: white;
-  border-radius: var(--space-4);
-  border: 1px solid var(--color-border);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
   height: 100%;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.product-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.06);
 }
 
 .product-image-wrap {
@@ -153,7 +161,7 @@ function handleAddToCart(event) {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform var(--transition-slow);
+  transition: transform var(--transition-slow, 0.3s ease);
 }
 
 .product-card:hover .product-image {
@@ -164,12 +172,12 @@ function handleAddToCart(event) {
   position: absolute;
   top: 10px;
   left: 10px;
-  background-color: var(--color-primary);
+  background-color: var(--color-primary, #6644ff);
   color: #ffffff;
   font-size: 0.72rem;
   font-weight: 700;
   padding: 0.25rem 0.6rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-full, 9999px);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
   letter-spacing: 0.02em;
 }
@@ -184,12 +192,11 @@ function handleAddToCart(event) {
   font-size: 0.72rem;
   font-weight: 600;
   padding: 0.25rem 0.6rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-full, 9999px);
 }
 
-/* PROXIMITY: Jarak elemen internal terikat rapi dalam body kartu */
 .product-info {
-  padding: var(--space-6);
+  padding: var(--space-6, 24px);
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -205,7 +212,7 @@ function handleAddToCart(event) {
 .product-category {
   font-size: 0.78rem;
   font-weight: 600;
-  color: var(--color-primary);
+  color: var(--color-primary, #6644ff);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -218,23 +225,23 @@ function handleAddToCart(event) {
 }
 
 .star-icon {
-  width: 14px;
-  height: 14px;
+  width: 0.95rem;
+  height: 0.95rem;
   color: #f59e0b;
 }
 
 .rating-value {
   font-weight: 700;
-  color: var(--color-text);
+  color: var(--color-text, #1c1948);
 }
 
 .reviews-count {
-  color: var(--color-text-muted);
+  color: var(--color-text-muted, #94a3b8);
   font-size: 0.75rem;
 }
 
 .product-title {
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 700;
   line-height: 1.4;
   margin-bottom: 0.75rem;
@@ -242,25 +249,26 @@ function handleAddToCart(event) {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  min-height: 2.8em;
+  height: 2.8em;
 }
 
 .title-link {
-  color: var(--color-text);
-  transition: color var(--transition-fast);
+  color: var(--color-text, #1c1948);
+  text-decoration: none;
+  transition: color var(--transition-fast, 0.15s ease);
 }
 
 .title-link:hover {
-  color: var(--color-primary);
+  color: var(--color-primary, #6644ff);
 }
 
 .product-price-row {
-  margin-top: auto;
-  padding-top: 0.5rem;
-  margin-bottom: 1rem;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
+  margin-top: auto;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border-subtle, #f1f5f9);
 }
 
 .price-container {
@@ -271,55 +279,49 @@ function handleAddToCart(event) {
 .current-price {
   font-size: 1.15rem;
   font-weight: 800;
-  color: var(--color-primary);
+  color: var(--color-primary, #6644ff);
   letter-spacing: -0.01em;
 }
 
 .original-price {
   font-size: 0.8rem;
-  color: var(--color-text-muted);
+  color: var(--color-text-muted, #94a3b8);
   text-decoration: line-through;
 }
 
 .stock-status {
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--color-text-secondary);
-  background-color: var(--color-surface-alt);
-  padding: 0.15rem 0.45rem;
-  border-radius: var(--radius-xs);
+  color: #10b981;
 }
 
 .stock-status.low-stock {
-  color: #b45309;
-  background-color: #fef3c7;
+  color: #ef4444;
 }
 
 .product-actions {
   display: grid;
-  grid-template-columns: 1fr 1.1fr;
+  grid-template-columns: 1fr 1.2fr;
   gap: 0.5rem;
+  margin-top: 1rem;
 }
 
-.btn-detail {
-  font-size: 0.8rem;
-  padding: 0.55rem 0.6rem;
-  gap: 0.35rem;
+.detail-link-wrap {
+  text-decoration: none;
+  display: flex;
 }
 
-.arrow-icon {
-  width: 14px;
-  height: 14px;
+.btn-detail-app {
+  width: 100%;
 }
 
-.btn-add-cart {
-  font-size: 0.8rem;
-  padding: 0.55rem 0.6rem;
-  gap: 0.35rem;
+.btn-add-cart-app {
+  width: 100%;
 }
 
+.arrow-icon,
 .cart-btn-icon {
-  width: 14px;
-  height: 14px;
+  width: 0.95rem;
+  height: 0.95rem;
 }
 </style>

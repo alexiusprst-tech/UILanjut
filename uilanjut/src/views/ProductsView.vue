@@ -3,6 +3,9 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { products, categories } from '@/data/products'
 import ProductCard from '@/components/ProductCard.vue'
+import SearchBar from '@/components/product/SearchBar.vue'
+import CategoryFilter from '@/components/product/CategoryFilter.vue'
+import AppCard from '@/components/ui/AppCard.vue'
 import Breadcrumbs from '@/components/Breadcrumbs.vue'
 import EmptyState from '@/components/EmptyState.vue'
 
@@ -38,7 +41,7 @@ watch(
   },
 )
 
-function setCategory(categoryId) {
+function onCategoryChange(categoryId) {
   selectedCategory.value = categoryId
   router.push({
     path: '/products',
@@ -47,6 +50,10 @@ function setCategory(categoryId) {
       category: categoryId !== 'all' ? categoryId : undefined,
     },
   })
+}
+
+function handleViewDetail(productId) {
+  router.push(`/products/${productId}`)
 }
 
 function clearFilters() {
@@ -62,7 +69,9 @@ const filteredProducts = computed(() => {
 
   // Filter by category
   if (selectedCategory.value && selectedCategory.value !== 'all') {
-    result = result.filter((p) => p.category.toLowerCase() === selectedCategory.value.toLowerCase())
+    result = result.filter(
+      (p) => p.category.toLowerCase() === selectedCategory.value.toLowerCase(),
+    )
   }
 
   // Filter by search query
@@ -122,52 +131,18 @@ const breadcrumbItems = computed(() => {
         </div>
       </div>
 
-      <!-- Filter and Search Controls Bar -->
-      <div class="controls-card card">
+      <!-- ===================================================================
+           MODUL 3: ORKESTRASI UTAMA DENGAN SEARCHBAR & CATEGORYFILTER
+           =================================================================== -->
+      <AppCard :hoverable="false" class="controls-card">
         <div class="controls-grid">
-          <!-- Search Input -->
-          <div class="search-input-wrap">
-            <svg
-              class="search-icon"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="2"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-              />
-            </svg>
-            <input
-              v-model="searchQuery"
-              type="text"
-              placeholder="Cari nama produk, spesifikasi, atau kategori..."
-              class="search-input"
-            />
-            <button
-              v-if="searchQuery"
-              type="button"
-              class="clear-search-btn"
-              @click="searchQuery = ''"
-              aria-label="Hapus kata kunci pencarian"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="2"
-                stroke="currentColor"
-                class="clear-icon"
-              >
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
+          <!-- Modular SearchBar Component with v-model -->
+          <SearchBar
+            v-model="searchQuery"
+            placeholder="Cari nama produk, spesifikasi, atau kategori..."
+          />
 
-          <!-- Sort Select -->
+          <!-- Sort Selector -->
           <div class="sort-wrap">
             <label for="sort-select" class="sort-label">Urutkan:</label>
             <select id="sort-select" v-model="sortBy" class="sort-select">
@@ -180,33 +155,32 @@ const breadcrumbItems = computed(() => {
           </div>
         </div>
 
-        <!-- Category Filter Pills -->
-        <div class="category-pills-row">
+        <!-- Modular CategoryFilter Component with v-model & events -->
+        <div class="category-filter-row">
           <span class="category-label">Kategori:</span>
-          <div class="category-pills">
-            <button
-              v-for="cat in categories"
-              :key="cat.id"
-              type="button"
-              class="cat-pill"
-              :class="{
-                active:
-                  selectedCategory === cat.id || (cat.id === 'all' && selectedCategory === 'all'),
-              }"
-              @click="setCategory(cat.id)"
-            >
-              {{ cat.name }}
-            </button>
-          </div>
+          <CategoryFilter
+            :categories="categories"
+            :model-value="selectedCategory"
+            @update:model-value="onCategoryChange"
+          />
         </div>
-      </div>
+      </AppCard>
 
-      <!-- Products Grid -->
+      <!-- ===================================================================
+           ADAPTIVE PRODUCTS GRID (v-for ProductCard)
+           =================================================================== -->
       <div v-if="filteredProducts.length > 0" class="products-grid">
-        <ProductCard v-for="product in filteredProducts" :key="product.id" :product="product" />
+        <ProductCard
+          v-for="product in filteredProducts"
+          :key="product.id"
+          :product="product"
+          @view-detail="handleViewDetail"
+        />
       </div>
 
-      <!-- Empty State If No Results Found -->
+      <!-- ===================================================================
+           MODUL 3 UX: PENANGANAN KONDISI EKSEPSI (EMPTY STATE)
+           =================================================================== -->
       <div v-else class="empty-results-container">
         <EmptyState
           title="Produk Tidak Ditemukan"
@@ -244,24 +218,24 @@ const breadcrumbItems = computed(() => {
 .catalog-title {
   font-size: 2rem;
   font-weight: 800;
-  color: var(--color-text);
+  color: var(--color-text, #1c1948);
   letter-spacing: -0.02em;
 }
 
 .catalog-subtitle {
   font-size: 0.95rem;
-  color: var(--color-text-secondary);
+  color: var(--color-text-secondary, #64748b);
   margin-top: 0.35rem;
   max-width: 600px;
 }
 
 .results-count-badge {
-  background-color: var(--color-primary-light);
-  color: var(--color-primary);
+  background-color: var(--color-primary-light, rgba(102, 68, 255, 0.1));
+  color: var(--color-primary, #6644ff);
   font-weight: 700;
   font-size: 0.85rem;
   padding: 0.45rem 1rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-full, 9999px);
   align-self: flex-start;
 }
 
@@ -279,156 +253,75 @@ const breadcrumbItems = computed(() => {
 }
 
 .controls-grid {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
 }
 
 @media (min-width: 768px) {
   .controls-grid {
-    grid-template-columns: 1fr auto;
-    align-items: center;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
   }
-}
-
-.search-input-wrap {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.search-icon {
-  position: absolute;
-  left: 14px;
-  width: 20px;
-  height: 20px;
-  color: var(--color-text-muted);
-  pointer-events: none;
-}
-
-.search-input {
-  width: 100%;
-  padding: 0.8rem 2.8rem 0.8rem 2.75rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background-color: var(--color-surface);
-  font-size: 0.95rem;
-  color: var(--color-text);
-  outline: none;
-  transition: all var(--transition-fast);
-}
-
-.search-input:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-}
-
-.clear-search-btn {
-  position: absolute;
-  right: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-text-muted);
-  padding: 4px;
-}
-
-.clear-search-btn:hover {
-  color: var(--color-text);
-}
-
-.clear-icon {
-  width: 16px;
-  height: 16px;
 }
 
 .sort-wrap {
   display: flex;
   align-items: center;
   gap: 0.6rem;
+  margin-top: 0.1rem;
 }
 
 .sort-label {
   font-size: 0.88rem;
   font-weight: 600;
-  color: var(--color-text-secondary);
+  color: var(--color-text-secondary, #64748b);
   white-space: nowrap;
 }
 
 .sort-select {
-  padding: 0.8rem 1.2rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background-color: var(--color-surface);
-  color: var(--color-text);
+  padding: 0.7rem 1.2rem;
+  border: 1px solid var(--border-color, #e4e4e7);
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: var(--color-text, #1c1948);
+  font-family: inherit;
   font-size: 0.9rem;
   font-weight: 600;
   outline: none;
   cursor: pointer;
+  transition: border-color 0.2s ease;
 }
 
 .sort-select:focus {
-  border-color: var(--color-primary);
+  border-color: var(--primary, #6644ff);
 }
 
-/* Category Pills */
-.category-pills-row {
+.category-filter-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 1rem;
   flex-wrap: wrap;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--color-border-light);
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color, #e4e4e7);
 }
 
 .category-label {
   font-size: 0.88rem;
   font-weight: 700;
-  color: var(--color-text-secondary);
-}
-
-.category-pills {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.cat-pill {
-  padding: 0.45rem 1rem;
-  border-radius: var(--radius-full);
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--color-text-secondary);
-  background-color: var(--color-surface-alt);
-  border: 1px solid var(--color-border);
-  transition: all var(--transition-fast);
-  cursor: pointer;
-}
-
-.cat-pill:hover {
-  background-color: var(--color-primary-light);
-  color: var(--color-primary);
-  border-color: rgba(37, 99, 235, 0.3);
-}
-
-.cat-pill.active {
-  background-color: var(--color-primary);
-  color: #ffffff;
-  border-color: var(--color-primary);
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+  color: var(--color-text-secondary, #64748b);
+  margin-top: 0.45rem;
 }
 
 /* ==========================================================================
-   MODUL 2: ADAPTIVE GRID (auto-fill)
-   Responsif otomatis menyesuaikan lebar layar (4, 3, 2, atau 1 kolom)
-   tanpa perlu koding Media Query yang rumit.
+   ADAPTIVE GRID (auto-fill)
    ========================================================================== */
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: var(--space-6);
+  gap: var(--space-6, 24px);
 }
 
 .empty-results-container {
