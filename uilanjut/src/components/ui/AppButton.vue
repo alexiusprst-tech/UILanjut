@@ -107,6 +107,50 @@ defineEmits(['click'])
   background-color: rgba(102, 68, 255, 0.08);
 }
 
+.btn-danger {
+  background-color: #ef4444;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
+}
+
+.btn-danger:hover:not(:disabled) {
+  background-color: #dc2626;
+  box-shadow: 0 6px 18px rgba(239, 68, 68, 0.4);
+}
+
+.btn-danger-outline {
+  background-color: transparent;
+  color: #ef4444;
+  border-color: #fca5a5;
+}
+
+.btn-danger-outline:hover:not(:disabled) {
+  background-color: #fef2f2;
+  border-color: #ef4444;
+}
+
+.btn-success {
+  background-color: #10b981;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+}
+
+.btn-success:hover:not(:disabled) {
+  background-color: #059669;
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.4);
+}
+
+.btn-success-outline {
+  background-color: transparent;
+  color: #059669;
+  border-color: #a7f3d0;
+}
+
+.btn-success-outline:hover:not(:disabled) {
+  background-color: #ecfdf5;
+  border-color: #059669;
+}
+
 .is-disabled,
 .app-button:disabled {
   opacity: 0.6;

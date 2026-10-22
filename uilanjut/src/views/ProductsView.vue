@@ -1,16 +1,20 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { products, categories } from '@/data/products'
+import { useProducts } from '@/composables/useProducts'
 import ProductCard from '@/components/ProductCard.vue'
 import SearchBar from '@/components/product/SearchBar.vue'
 import CategoryFilter from '@/components/product/CategoryFilter.vue'
 import AppCard from '@/components/ui/AppCard.vue'
+import AppButton from '@/components/ui/AppButton.vue'
 import Breadcrumbs from '@/components/Breadcrumbs.vue'
 import EmptyState from '@/components/EmptyState.vue'
 
 const route = useRoute()
 const router = useRouter()
+
+// Single Source of Truth: Centralized reactive products state
+const { activeProducts, categories, totalActiveProducts, resetToDefault } = useProducts()
 
 const searchQuery = ref('')
 const selectedCategory = ref('all')
@@ -63,9 +67,9 @@ function clearFilters() {
   router.push({ path: '/products' })
 }
 
-// Filtered and sorted products
+// Filtered and sorted products derived from Single Source of Truth activeProducts
 const filteredProducts = computed(() => {
-  let result = [...products]
+  let result = [...activeProducts.value]
 
   // Filter by category
   if (selectedCategory.value && selectedCategory.value !== 'all') {
@@ -131,9 +135,7 @@ const breadcrumbItems = computed(() => {
         </div>
       </div>
 
-      <!-- ===================================================================
-           MODUL 3: ORKESTRASI UTAMA DENGAN SEARCHBAR & CATEGORYFILTER
-           =================================================================== -->
+      <!-- Controls Card (Search & Category Filter) -->
       <AppCard :hoverable="false" class="controls-card">
         <div class="controls-grid">
           <!-- Modular SearchBar Component with v-model -->
@@ -179,10 +181,30 @@ const breadcrumbItems = computed(() => {
       </div>
 
       <!-- ===================================================================
-           MODUL 3 UX: PENANGANAN KONDISI EKSEPSI (EMPTY STATE)
+           MODUL 4 UX: FRIENDLY EMPTY STATE (Screenshot 1)
            =================================================================== -->
       <div v-else class="empty-results-container">
+        <!-- Kasus 1: Seluruh katalog kosong (Tidak ada produk aktif sama sekali) -->
+        <div v-if="totalActiveProducts === 0" class="catalog-empty-box card">
+          <div class="catalog-empty-icon">📦</div>
+          <h2 class="catalog-empty-title">Belum Ada Produk Tersedia</h2>
+          <p class="catalog-empty-desc">
+            Saat ini belum ada produk aktif yang dijadwalkan di katalog toko. Apakah Anda
+            admin/pengelola toko? Publikasikan dan kelola produk pertama Anda melalui Dashboard!
+          </p>
+          <div class="catalog-empty-actions">
+            <RouterLink to="/dashboard/products" class="btn btn-primary btn-lg">
+              <span>Buka Dashboard Admin &rarr;</span>
+            </RouterLink>
+            <AppButton variant="secondary" size="md" @click="resetToDefault">
+              <span>Muat Ulang Produk Contoh</span>
+            </AppButton>
+          </div>
+        </div>
+
+        <!-- Kasus 2: Ada produk di database, tetapi pencarian/filter menghasilkan 0 -->
         <EmptyState
+          v-else
           title="Produk Tidak Ditemukan"
           message="Maaf, tidak ada produk yang cocok dengan pencarian atau filter yang Anda pilih. Coba gunakan kata kunci lain."
           icon="search"
@@ -325,7 +347,55 @@ const breadcrumbItems = computed(() => {
 }
 
 .empty-results-container {
-  max-width: 600px;
-  margin: 2rem auto;
+  max-width: 620px;
+  margin: 3rem auto;
+}
+
+.catalog-empty-box {
+  background: #ffffff;
+  border-radius: var(--radius-xl, 20px);
+  padding: 3.5rem 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid var(--border-color, #e4e4e7);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+}
+
+.catalog-empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1.25rem;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background-color: var(--color-primary-light, rgba(102, 68, 255, 0.08));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.catalog-empty-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-text, #1c1948);
+  margin-bottom: 0.6rem;
+  letter-spacing: -0.02em;
+}
+
+.catalog-empty-desc {
+  font-size: 0.95rem;
+  color: var(--color-text-secondary, #64748b);
+  max-width: 440px;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.catalog-empty-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 </style>
