@@ -1,25 +1,31 @@
 <script setup>
 import { RouterLink } from 'vue-router'
 import { useStoreAdmin } from '@/stores/storeAdmin'
+import { useProducts } from '@/composables/useProducts'
 import { formatRupiah } from '@/data/products'
 
 const adminStore = useStoreAdmin()
+const {
+  products,
+  totalProducts,
+  totalActiveProducts,
+  totalInactiveProducts,
+} = useProducts()
 </script>
 
 <template>
   <div class="admin-overview">
-    <!-- Header Section -->
+    <!-- Header Section matching Screenshot 1 & 3 -->
     <div class="overview-header">
       <div>
-        <h1 class="page-title">Ringkasan Toko</h1>
+        <h1 class="page-title">Ringkasan &amp; Analisis Toko</h1>
         <p class="page-subtitle">
-          Selamat datang kembali, <strong>{{ adminStore.storeInfo.owner }}</strong
-          >. Pantau metrik penjualan dan operasional toko SHOPNEST Anda hari ini.
+          Pantau statistik real-time dan lacak status seluruh produk yang dikelola pada katalog SHOPNEST.
         </p>
       </div>
 
       <div class="header-actions">
-        <RouterLink to="/dashboard/products" class="btn btn-primary btn-sm">
+        <RouterLink to="/dashboard/products" class="btn btn-primary btn-sm btn-manage-events">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -30,112 +36,105 @@ const adminStore = useStoreAdmin()
           >
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
           </svg>
-          <span>Kelola Produk</span>
-        </RouterLink>
-        <RouterLink to="/dashboard/orders" class="btn btn-secondary btn-sm">
-          <span>Lihat Pesanan ({{ adminStore.pendingOrdersCount }})</span>
+          <span>Kelola Produk &rarr;</span>
         </RouterLink>
       </div>
     </div>
 
-    <!-- 1. KPI Metrics Grid (Common Regions & Visual Hierarchy) -->
-    <div class="metrics-grid">
-      <!-- Card 1: Total Omzet -->
-      <div class="metric-card card">
-        <div class="metric-icon-box bg-blue">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="2"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-            />
-          </svg>
-        </div>
-        <div class="metric-details">
-          <span class="metric-label">Total Omzet Penjualan</span>
-          <h2 class="metric-value">{{ formatRupiah(adminStore.totalOmzet) }}</h2>
-          <span class="metric-trend text-success">&uarr; +14.8% dari bulan lalu</span>
-        </div>
+    <!-- ===================================================================
+         MODUL 4: 3 METRIC CARDS (DERIVED STATE VIA COMPUTED)
+         Screenshots 1 & 3 (Total Products, Active Products, Inactive Products)
+         =================================================================== -->
+    <div class="modul4-metrics-grid">
+      <!-- Card 1: TOTAL PRODUK (TOTAL EVENTS) -->
+      <div class="modul4-metric-card card">
+        <span class="modul4-metric-label">TOTAL PRODUK</span>
+        <h2 class="modul4-metric-value val-purple">{{ totalProducts }}</h2>
+        <span class="modul4-metric-subtext">Semua produk tercatat di sistem</span>
       </div>
 
-      <!-- Card 2: Pesanan Perlu Diproses -->
-      <div class="metric-card card">
-        <div class="metric-icon-box bg-amber">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="2"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
-            />
-          </svg>
-        </div>
-        <div class="metric-details">
-          <span class="metric-label">Pesanan Baru Masuk</span>
-          <h2 class="metric-value">{{ adminStore.pendingOrdersCount }} Pesanan</h2>
-          <span class="metric-trend text-warning">Perlu segera dipacking</span>
-        </div>
+      <!-- Card 2: PRODUK AKTIF (ACTIVE EVENTS) -->
+      <div class="modul4-metric-card card">
+        <span class="modul4-metric-label">PRODUK AKTIF</span>
+        <h2 class="modul4-metric-value val-green">{{ totalActiveProducts }}</h2>
+        <span class="modul4-metric-subtext">Aktif tayang di katalog publik</span>
       </div>
 
-      <!-- Card 3: Total Produk Toko -->
-      <div class="metric-card card">
-        <div class="metric-icon-box bg-indigo">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="2"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"
-            />
-          </svg>
+      <!-- Card 3: PRODUK NONAKTIF / SELESAI (COMPLETED EVENTS) -->
+      <div class="modul4-metric-card card">
+        <span class="modul4-metric-label">PRODUK NONAKTIF</span>
+        <h2 class="modul4-metric-value val-gray">{{ totalInactiveProducts }}</h2>
+        <span class="modul4-metric-subtext">Diarsipkan / disembunyikan</span>
+      </div>
+    </div>
+
+    <!-- ===================================================================
+         MODUL 4: RECENT PRODUCTS STATUS OVERVIEW (Screenshots 1 & 3)
+         =================================================================== -->
+    <div class="card recent-status-card">
+      <div class="recent-status-header">
+        <div>
+          <h2 class="recent-status-title">Status Produk Terkini</h2>
+          <p class="recent-status-subtitle">
+            Master data seluruh produk yang dikelola pada platform SHOPNEST.
+          </p>
         </div>
-        <div class="metric-details">
-          <span class="metric-label">Produk Terdaftar</span>
-          <h2 class="metric-value">{{ adminStore.productList.length }} SKU</h2>
-          <span class="metric-trend text-info">{{ adminStore.lowStockCount }} produk menipis</span>
-        </div>
+        <RouterLink to="/dashboard/products" class="recent-status-link">
+          Buka Kelola Produk &rarr;
+        </RouterLink>
       </div>
 
-      <!-- Card 4: Rating & Followers -->
-      <div class="metric-card card">
-        <div class="metric-icon-box bg-emerald">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="2"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
-            />
-          </svg>
-        </div>
-        <div class="metric-details">
-          <span class="metric-label">Reputasi Toko</span>
-          <h2 class="metric-value">{{ adminStore.storeInfo.rating }} / 5.0</h2>
-          <span class="metric-trend text-success"
-            >{{ adminStore.storeInfo.followers.toLocaleString('id-ID') }} Pelanggan</span
-          >
-        </div>
+      <!-- Empty State for Overview (Screenshot 1) -->
+      <div v-if="totalProducts === 0" class="overview-empty-box">
+        <div class="overview-empty-icon">📊</div>
+        <p class="overview-empty-text">Belum ada produk tercatat di sistem.</p>
+        <RouterLink to="/dashboard/products" class="btn btn-primary btn-sm">
+          <span>+ Tambah Produk Pertama</span>
+        </RouterLink>
+      </div>
+
+      <!-- Table with Active/Inactive Badges (Screenshot 3) -->
+      <div v-else class="table-responsive">
+        <table class="status-table">
+          <thead>
+            <tr>
+              <th>NAMA PRODUK</th>
+              <th>KATEGORI</th>
+              <th>HARGA &amp; STOK</th>
+              <th>STATUS STOK</th>
+              <th>STATUS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="product in products.slice(0, 5)" :key="product.id">
+              <td>
+                <div class="product-title-cell">
+                  <span class="title-bold">{{ product.name }}</span>
+                  <span v-if="product.badge" class="badge-sub">{{ product.badge }}</span>
+                </div>
+              </td>
+              <td>
+                <span class="category-pill">{{ product.category }}</span>
+              </td>
+              <td>
+                <span class="date-loc-text">
+                  {{ formatRupiah(product.price) }} &bull; 📦 {{ product.stock }} Unit
+                </span>
+              </td>
+              <td>
+                <span class="quota-text">{{ product.stock > 0 ? `${product.stock} Tersedia` : 'Habis' }}</span>
+              </td>
+              <td>
+                <span
+                  class="status-badge"
+                  :class="product.status === 'inactive' ? 'status-inactive' : 'status-active'"
+                >
+                  {{ product.status === 'inactive' ? 'Nonaktif' : 'Aktif' }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
@@ -277,6 +276,224 @@ const adminStore = useStoreAdmin()
 .btn-icon {
   width: 16px;
   height: 16px;
+}
+
+/* Modul 4: 3 Metric Cards matching Screenshots 1 & 3 */
+.modul4-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-5, 20px);
+}
+
+.modul4-metric-card {
+  padding: 1.75rem 2rem;
+  background-color: #ffffff;
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: var(--radius-xl, 20px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.modul4-metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.modul4-metric-label {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--color-text-secondary, #64748b);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.modul4-metric-value {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin: 0.25rem 0;
+  letter-spacing: -0.03em;
+}
+
+.val-purple {
+  color: var(--color-primary, #6644ff);
+}
+
+.val-green {
+  color: #10b981;
+}
+
+.val-gray {
+  color: #64748b;
+}
+
+.modul4-metric-subtext {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary, #94a3b8);
+  font-weight: 500;
+}
+
+/* Modul 4: Recent Status Overview Card & Table */
+.recent-status-card {
+  padding: var(--space-6, 24px);
+  background-color: #ffffff;
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: var(--radius-xl, 20px);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.recent-status-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border-light, #f1f5f9);
+}
+
+@media (min-width: 768px) {
+  .recent-status-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.recent-status-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-text, #1c1948);
+}
+
+.recent-status-subtitle {
+  font-size: 0.88rem;
+  color: var(--color-text-secondary, #64748b);
+  margin-top: 2px;
+}
+
+.recent-status-link {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--color-primary, #6644ff);
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.recent-status-link:hover {
+  text-decoration: underline;
+}
+
+.overview-empty-box {
+  padding: 3rem 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.overview-empty-icon {
+  font-size: 2.5rem;
+}
+
+.overview-empty-text {
+  font-size: 0.95rem;
+  color: var(--color-text-secondary, #64748b);
+  font-weight: 500;
+}
+
+.status-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.status-table th {
+  padding: 0.85rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--color-text-secondary, #64748b);
+  letter-spacing: 0.05em;
+  background-color: #f8fafc;
+  border-bottom: 1px solid var(--color-border, #e2e8f0);
+}
+
+.status-table td {
+  padding: 1.1rem 1rem;
+  border-bottom: 1px solid var(--color-border-light, #f1f5f9);
+  vertical-align: middle;
+}
+
+.status-table tr:hover {
+  background-color: #fcfcfd;
+}
+
+.product-title-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.title-bold {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-text, #1c1948);
+}
+
+.badge-sub {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--color-primary, #6644ff);
+  background-color: rgba(102, 68, 255, 0.08);
+  padding: 1px 6px;
+  border-radius: 4px;
+  width: fit-content;
+}
+
+.category-pill {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #4f46e5;
+  background-color: #eef2ff;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full, 9999px);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.date-loc-text {
+  font-size: 0.88rem;
+  color: var(--color-text, #1c1948);
+  font-weight: 500;
+}
+
+.quota-text {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary, #64748b);
+  font-weight: 600;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full, 9999px);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.status-active {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.status-inactive {
+  background-color: #f1f5f9;
+  color: #64748b;
 }
 
 /* Metrics Grid */

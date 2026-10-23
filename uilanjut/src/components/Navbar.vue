@@ -2,8 +2,10 @@
 import { ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { useCartStore } from '@/stores/cart'
+import { useEvents } from '@/composables/useEvents'
 
 const cartStore = useCartStore()
+const { tickets } = useEvents()
 const route = useRoute()
 const isMobileMenuOpen = ref(false)
 
@@ -91,6 +93,55 @@ watch(
           <span>Produk</span>
         </RouterLink>
 
+        <!-- Modul 5: Events & Workshop Catalog -->
+        <RouterLink
+          to="/browse"
+          class="nav-link"
+          :class="{ active: route.path.startsWith('/browse') || route.path.startsWith('/events') }"
+        >
+          <svg
+            class="nav-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"
+            />
+          </svg>
+          <span>Events</span>
+        </RouterLink>
+
+        <!-- Modul 5: Your Events (Dengan live ticket count badge) -->
+        <RouterLink
+          to="/your-events"
+          class="nav-link ticket-nav-link"
+          :class="{ active: route.path === '/your-events' || route.path.startsWith('/tickets') }"
+        >
+          <div class="cart-icon-container">
+            <svg
+              class="nav-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 0 1 0 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 0 1 0-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375Z"
+              />
+            </svg>
+            <span v-if="tickets.length > 0" class="ticket-badge">{{ tickets.length }}</span>
+          </div>
+          <span>Your Events</span>
+        </RouterLink>
+
         <!-- Keranjang (Dengan live counter badge) -->
         <RouterLink
           to="/cart"
@@ -136,6 +187,35 @@ watch(
             />
           </svg>
           <span>Profil</span>
+        </RouterLink>
+
+        <!-- Modul 5: Organizer Dashboard -->
+        <RouterLink
+          to="/event-management"
+          class="nav-link organizer-nav-link"
+          :class="{ active: route.path === '/event-management' }"
+          title="Organizer Dashboard Acara"
+        >
+          <svg
+            class="nav-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z"
+            />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z"
+            />
+          </svg>
+          <span>Organizer</span>
         </RouterLink>
 
         <!-- Modul 2: Admin Toko Dashboard (Rail & Pane) -->
@@ -219,6 +299,55 @@ watch(
             <span>Produk</span>
           </RouterLink>
 
+          <!-- Modul 5: Events Catalog (Mobile) -->
+          <RouterLink
+            to="/browse"
+            class="mobile-nav-link"
+            :class="{ active: route.path.startsWith('/browse') || route.path.startsWith('/events') }"
+          >
+            <svg
+              class="mobile-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"
+              />
+            </svg>
+            <span>Events &amp; Workshop</span>
+          </RouterLink>
+
+          <!-- Modul 5: Your Events (Mobile) -->
+          <RouterLink
+            to="/your-events"
+            class="mobile-nav-link ticket-nav-link"
+            :class="{ active: route.path === '/your-events' || route.path.startsWith('/tickets') }"
+          >
+            <div class="cart-icon-container">
+              <svg
+                class="mobile-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 0 1 0 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 0 1 0-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375Z"
+                />
+              </svg>
+              <span v-if="tickets.length > 0" class="ticket-badge">{{ tickets.length }}</span>
+            </div>
+            <span>Your Events (Tiket)</span>
+          </RouterLink>
+
           <RouterLink
             to="/cart"
             class="mobile-nav-link"
@@ -266,6 +395,34 @@ watch(
               />
             </svg>
             <span>Profil</span>
+          </RouterLink>
+
+          <!-- Modul 5: Organizer Dashboard (Mobile) -->
+          <RouterLink
+            to="/event-management"
+            class="mobile-nav-link"
+            :class="{ active: route.path === '/event-management' }"
+          >
+            <svg
+              class="mobile-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z"
+              />
+            </svg>
+            <span>Organizer Dashboard</span>
           </RouterLink>
 
           <RouterLink to="/dashboard" class="mobile-nav-link mobile-admin-link">
@@ -366,33 +523,48 @@ watch(
 .desktop-nav {
   display: none;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.25rem;
+  flex-wrap: nowrap;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .desktop-nav {
     display: flex;
   }
 }
 
 .nav-link {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.55rem 1rem;
+  gap: 0.4rem;
+  padding: 0.45rem 0.75rem;
   color: var(--color-text-secondary);
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   border-radius: var(--radius-md);
   transition: all var(--transition-normal);
   text-decoration: none;
   position: relative;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+@media (min-width: 1024px) and (max-width: 1240px) {
+  .nav-link {
+    padding: 0.4rem 0.55rem;
+    font-size: 0.82rem;
+    gap: 0.3rem;
+  }
+  .desktop-nav {
+    gap: 0.15rem;
+  }
 }
 
 .nav-icon {
-  width: 19px;
-  height: 19px;
+  width: 18px;
+  height: 18px;
   transition: transform var(--transition-fast);
+  flex-shrink: 0;
 }
 
 .nav-link:hover {
@@ -438,13 +610,23 @@ watch(
   animation: badgePop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-@keyframes badgePop {
-  0% {
-    transform: scale(0.4);
-  }
-  100% {
-    transform: scale(1);
-  }
+.ticket-badge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background-color: #6644ff;
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  min-width: 18px;
+  height: 18px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  box-shadow: 0 2px 6px rgba(102, 68, 255, 0.4);
+  animation: badgePop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 /* Mobile Toggle Hamburger */
@@ -461,7 +643,7 @@ watch(
   padding: 0;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .mobile-toggle {
     display: none;
   }

@@ -1,7 +1,8 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
-import { getProductById, getRelatedProducts, formatRupiah } from '@/data/products'
+import { formatRupiah } from '@/data/products'
+import { useProducts } from '@/composables/useProducts'
 import { useCartStore } from '@/stores/cart'
 import Breadcrumbs from '@/components/Breadcrumbs.vue'
 import ProductCard from '@/components/ProductCard.vue'
@@ -12,14 +13,16 @@ import AppButton from '@/components/ui/AppButton.vue'
 const route = useRoute()
 const router = useRouter()
 const cartStore = useCartStore()
+const { getProductById, products } = useProducts()
 
 const quantity = ref(1)
 const activeImageIndex = ref(0)
 
-// Fetch product based on route.params.id
+// Fetch product based on route.params.id from centralized state
+// Produk nonaktif otomatis disembunyikan dari halaman publik
 const product = computed(() => {
-  const id = route.params.id
-  return getProductById(id)
+  const found = getProductById(route.params.id)
+  return found && found.status !== 'inactive' ? found : undefined
 })
 
 // Reset quantity & active image when route parameter changes
@@ -32,10 +35,13 @@ watch(
   },
 )
 
-// Related products
+// Related products derived from centralized products state
 const relatedProducts = computed(() => {
   if (!product.value) return []
-  return getRelatedProducts(product.value.id, product.value.category, 4)
+  const currentId = Number(product.value.id)
+  return products.value
+    .filter((p) => p.id !== currentId && p.category === product.value.category && p.status !== 'inactive')
+    .slice(0, 4)
 })
 
 // Breadcrumbs items

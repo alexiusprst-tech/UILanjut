@@ -1,8 +1,18 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { products as initialProducts } from '@/data/products'
+import { useProducts } from '@/composables/useProducts'
 
 export const useStoreAdmin = defineStore('storeAdmin', () => {
+  const {
+    products: productList,
+    addProduct,
+    updateStock,
+    deleteProduct,
+    toggleProductStatus,
+    resetToDefault,
+    clearAllProducts,
+  } = useProducts()
+
   // 1. Profil & Pengaturan Toko
   const storeInfo = ref({
     name: 'SHOPNEST Official Store',
@@ -17,10 +27,7 @@ export const useStoreAdmin = defineStore('storeAdmin', () => {
     shippingPartners: ['JNE Express', 'SiCepat Halu', 'GoSend Instant', 'J&T Cargo'],
   })
 
-  // 2. Data Produk Toko
-  const productList = ref([...initialProducts])
-
-  // 3. Data Pesanan Masuk Toko
+  // 2. Data Pesanan Masuk Toko
   const orderList = ref([
     {
       id: 'ORD-2026-9011',
@@ -106,44 +113,6 @@ export const useStoreAdmin = defineStore('storeAdmin', () => {
     return productList.value.filter((p) => p.stock <= 10).length
   })
 
-  // Aksi Produk
-  function addProduct(newProduct) {
-    const nextId = Math.max(...productList.value.map((p) => p.id), 0) + 1
-    const product = {
-      id: nextId,
-      name: newProduct.name,
-      category: newProduct.category || 'Electronics',
-      price: Number(newProduct.price) || 0,
-      originalPrice: newProduct.originalPrice ? Number(newProduct.originalPrice) : null,
-      stock: Number(newProduct.stock) || 0,
-      rating: 5.0,
-      reviewsCount: 0,
-      badge: newProduct.badge || 'Baru',
-      image: newProduct.image || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80',
-      description: newProduct.description || 'Deskripsi produk baru toko SHOPNEST.',
-      features: ['Produk original bergaransi', 'Kondisi barang baru bersegel'],
-    }
-    productList.value.unshift(product)
-    showNotification(`Produk "${product.name}" berhasil ditambahkan ke katalog toko!`, 'success')
-    return product
-  }
-
-  function updateStock(id, newStock) {
-    const item = productList.value.find((p) => p.id === id)
-    if (item) {
-      item.stock = Math.max(0, Number(newStock))
-      showNotification(`Stok untuk "${item.name}" diperbarui menjadi ${item.stock} unit.`, 'info')
-    }
-  }
-
-  function deleteProduct(id) {
-    const idx = productList.value.findIndex((p) => p.id === id)
-    if (idx !== -1) {
-      const removed = productList.value.splice(idx, 1)[0]
-      showNotification(`Produk "${removed.name}" telah dihapus dari toko.`, 'warning')
-    }
-  }
-
   // Aksi Pesanan
   function updateOrderStatus(orderId, newStatus) {
     const order = orderList.value.find((o) => o.id === orderId)
@@ -173,6 +142,9 @@ export const useStoreAdmin = defineStore('storeAdmin', () => {
     addProduct,
     updateStock,
     deleteProduct,
+    toggleProductStatus,
+    resetToDefault,
+    clearAllProducts,
     updateOrderStatus,
     saveStoreSettings,
   }

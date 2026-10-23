@@ -1,12 +1,15 @@
 <script setup>
+import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
-import { categories, getFeaturedProducts } from '@/data/products'
+import { categories } from '@/data/products'
+import { useProducts } from '@/composables/useProducts'
 import ProductCard from '@/components/ProductCard.vue'
 import CategoryCard from '@/components/CategoryCard.vue'
 import AppButton from '@/components/ui/AppButton.vue'
 import AppCard from '@/components/ui/AppCard.vue'
 
-const featuredProducts = getFeaturedProducts()
+const { activeProducts } = useProducts()
+const featuredProducts = computed(() => activeProducts.value.filter((p) => p.isFeatured))
 const mainCategories = categories.filter((c) => c.id !== 'all')
 </script>
 
