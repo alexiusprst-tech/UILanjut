@@ -82,10 +82,11 @@ onBeforeUnmount(() => {
           aria-modal="true"
           :aria-labelledby="title"
         >
-          <!-- Icon Header matching Screenshot 5 -->
-          <div class="modal-icon-badge" :class="`icon-${icon}`">
+          <!-- Icon Header matching Screenshot 2 & 5 -->
+          <div v-if="icon !== 'none'" class="modal-icon-badge" :class="`icon-${icon}`">
             <span v-if="icon === 'warning'" class="icon-emoji">⚠️</span>
             <span v-else-if="icon === 'danger'" class="icon-emoji">🗑️</span>
+            <span v-else-if="icon === 'success'" class="icon-emoji">🎉</span>
             <span v-else class="icon-emoji">ℹ️</span>
           </div>
 
@@ -96,25 +97,27 @@ onBeforeUnmount(() => {
             <slot />
           </div>
 
-          <!-- Action Buttons -->
-          <div class="modal-actions">
-            <AppButton
-              variant="secondary"
-              size="sm"
-              class="btn-cancel"
-              @click="handleClose"
-            >
-              {{ cancelText }}
-            </AppButton>
-            <AppButton
-              :variant="confirmVariant"
-              size="sm"
-              class="btn-confirm"
-              @click="handleConfirm"
-            >
-              {{ confirmText }}
-            </AppButton>
-          </div>
+          <!-- Action Buttons / Named Slot Footer -->
+          <slot name="footer">
+            <div class="modal-actions">
+              <AppButton
+                variant="secondary"
+                size="sm"
+                class="btn-cancel"
+                @click="handleClose"
+              >
+                {{ cancelText }}
+              </AppButton>
+              <AppButton
+                :variant="confirmVariant"
+                size="sm"
+                class="btn-confirm"
+                @click="handleConfirm"
+              >
+                {{ confirmText }}
+              </AppButton>
+            </div>
+          </slot>
         </div>
       </div>
     </Transition>
