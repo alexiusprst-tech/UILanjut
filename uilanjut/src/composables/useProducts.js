@@ -1,223 +1,202 @@
-import { ref, computed, watch } from 'vue'
-import { products as initialProducts, categories as productCategories } from '@/data/products'
+import { ref, computed } from 'vue'
+import { categories } from '../data/products.js'
+import { productApi, DEFAULT_PRODUCT_IMAGE } from '../services/productApi.js'
 
-const STORAGE_KEY = 'shopnest_products_store'
+export function createProductsState(api = productApi) {
+  const products = ref([])
+  const loading = ref(false)
+  const error = ref('')
+  const hasLoaded = ref(false)
+  const isSubmitting = ref(false)
+  const actionError = ref('')
+  const pendingIds = ref(new Set())
+  const notificationMessage = ref('')
+  const notificationType = ref('success')
+  const isNotificationVisible = ref(false)
+  let notificationTimer
+  let listRequest
 
-// Load initial products with guaranteed 'status' field ('active' | 'inactive')
-function loadInitialProducts() {
-  if (typeof window === 'undefined') {
-    return initialProducts.map((p) => ({ ...p, status: p.status || 'active' }))
+  function showNotification(message, type = 'success', duration = 3500) {
+    notificationMessage.value = message
+    notificationType.value = type
+    isNotificationVisible.value = true
+    clearTimeout(notificationTimer)
+    notificationTimer = setTimeout(() => {
+      isNotificationVisible.value = false
+    }, duration)
+    notificationTimer.unref?.()
   }
 
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY)
-    if (saved) {
-      const parsed = JSON.parse(saved)
-      if (Array.isArray(parsed) && parsed.length >= 0) {
-        return parsed.map((p) => ({ ...p, status: p.status || 'active' }))
-      }
-    }
-  } catch (error) {
-    console.error('[useProducts] Gagal membaca data dari localStorage:', error)
-  }
-
-  return initialProducts.map((p) => ({ ...p, status: p.status || 'active' }))
-}
-
-// Module-level reactive state: Single Source of Truth across all components
-const products = ref(loadInitialProducts())
-
-// Watcher with deep: true for persistent state side effects
-if (typeof window !== 'undefined') {
-  watch(
-    products,
-    (newVal) => {
+  function fetchProducts() {
+    if (listRequest) return listRequest
+    if (isSubmitting.value || pendingIds.value.size) return Promise.resolve(null)
+    loading.value = true
+    error.value = ''
+    listRequest = (async () => {
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(newVal))
+        products.value = await api.list()
+        hasLoaded.value = true
+        return products.value
       } catch (err) {
-        console.error('[useProducts] Gagal menyimpan data ke localStorage:', err)
+        error.value = err.message
+        return null
+      } finally {
+        loading.value = false
+        listRequest = null
       }
-    },
-    { deep: true },
-  )
-}
-
-// Feedback Notification State
-const notificationMessage = ref('')
-const notificationType = ref('success') // 'success' | 'warning' | 'info' | 'danger'
-const isNotificationVisible = ref(false)
-let notificationTimer = null
-
-function showNotification(message, type = 'success', duration = 3500) {
-  notificationMessage.value = message
-  notificationType.value = type
-  isNotificationVisible.value = true
-
-  if (notificationTimer) clearTimeout(notificationTimer)
-  notificationTimer = setTimeout(() => {
-    isNotificationVisible.value = false
-  }, duration)
-}
-
-export function useProducts() {
-  // =========================================================================
-  // DERIVED STATE: Computed metrics calculated dynamically from raw state
-  // =========================================================================
-  const totalProducts = computed(() => products.value.length)
-
-  const activeProducts = computed(() =>
-    products.value.filter((p) => p.status !== 'inactive'),
-  )
-
-  const inactiveProducts = computed(() =>
-    products.value.filter((p) => p.status === 'inactive'),
-  )
-
-  const totalActiveProducts = computed(() => activeProducts.value.length)
-  const totalInactiveProducts = computed(() => inactiveProducts.value.length)
-
-  // =========================================================================
-  // STATE MUTATIONS: User Action -> State Change -> UI Update
-  // =========================================================================
-
-  /**
-   * 1. Create: Tambah produk baru ke state terpusat
-   */
-  function addProduct(productData) {
-    const nextId =
-      products.value.length > 0
-        ? Math.max(...products.value.map((p) => Number(p.id) || 0)) + 1
-        : 1
-
-    const newProduct = {
-      id: nextId,
-      name: productData.name.trim(),
-      category: productData.category || 'Electronics',
-      price: Number(productData.price) || 0,
-      originalPrice: productData.originalPrice ? Number(productData.originalPrice) : null,
-      stock: Number(productData.stock) || 0,
-      rating: 5.0,
-      reviewsCount: 0,
-      badge: productData.badge ? productData.badge.trim() : 'Baru',
-      image:
-        productData.image ||
-        'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80',
-      description:
-        productData.description ||
-        'Deskripsi produk baru yang dipublikasikan melalui Admin SHOPNEST.',
-      features: productData.features || [
-        'Produk original bergaransi resmi',
-        'Kondisi barang baru tersegel rapi',
-      ],
-      status: 'active', // default binary status active
-      createdAt: new Date().toISOString(),
-    }
-
-    products.value.unshift(newProduct)
-    showNotification(
-      `Produk "${newProduct.name}" berhasil dipublikasikan dan aktif di katalog!`,
-      'success',
-    )
-    return newProduct
+    })()
+    return listRequest
   }
 
-  /**
-   * 2. Update / Toggle: Ubah status biner produk (active <-> inactive)
-   */
-  function toggleProductStatus(productId) {
-    const numericId = Number(productId)
-    const product = products.value.find((p) => p.id === numericId)
-    if (!product) return null
+  function getProductById(id) {
+    return products.value.find((product) => String(product.id) === String(id))
+  }
 
-    const previousStatus = product.status
-    product.status = previousStatus === 'active' ? 'inactive' : 'active'
-
-    const statusLabel = product.status === 'active' ? 'Aktif' : 'Nonaktif'
-    showNotification(
-      `Status "${product.name}" diubah menjadi ${statusLabel}.`,
-      product.status === 'active' ? 'success' : 'warning',
-    )
+  async function fetchProductById(id) {
+    const product = await api.get(id)
+    const index = products.value.findIndex((item) => item.id === product.id)
+    if (index < 0) products.value.push(product)
+    else products.value[index] = product
     return product
   }
 
-  /**
-   * Update field stok
-   */
-  function updateStock(productId, newStock) {
-    const numericId = Number(productId)
-    const product = products.value.find((p) => p.id === numericId)
-    if (product) {
-      product.stock = Math.max(0, Number(newStock))
-      showNotification(`Stok "${product.name}" diperbarui: ${product.stock} unit.`, 'info')
-    }
-  }
-
-  /**
-   * 3. Delete: Pemusnahan data produk secara permanen
-   */
-  function deleteProduct(productId) {
-    const numericId = Number(productId)
-    const index = products.value.findIndex((p) => p.id === numericId)
-    if (index !== -1) {
-      const removed = products.value.splice(index, 1)[0]
-      showNotification(
-        `Produk "${removed.name}" telah dihapus permanen dari sistem.`,
-        'danger',
+  async function addProduct(data) {
+    if (isSubmitting.value || loading.value || pendingIds.value.size) return null
+    const price = Number(data.price)
+    const stock = Number(data.stock)
+    if (
+      !data.name?.trim() ||
+      !data.description?.trim() ||
+      !Number.isFinite(price) ||
+      price < 1000 ||
+      data.stock === '' ||
+      !Number.isInteger(stock) ||
+      stock < 0 ||
+      !categories.some((c) => c.id !== 'all' && c.id === data.category)
+    ) {
+      throw new Error(
+        'Lengkapi nama, kategori, harga minimal Rp1.000, stok bilangan bulat, dan deskripsi produk.',
       )
-      return removed
     }
-    return null
+    isSubmitting.value = true
+    actionError.value = ''
+    try {
+      const created = await api.create({
+        ...data,
+        name: data.name.trim(),
+        description: data.description.trim(),
+        price,
+        stock,
+        image: data.image || DEFAULT_PRODUCT_IMAGE,
+        status: 'active',
+        rating: 0,
+        reviewsCount: 0,
+        isFeatured: false,
+        features: data.features || [],
+        createdAt: new Date().toISOString(),
+      })
+      products.value.unshift(created)
+      showNotification(`Produk "${created.name}" berhasil dipublikasikan.`, 'success')
+      return created
+    } catch (err) {
+      actionError.value = err.message
+      throw err
+    } finally {
+      isSubmitting.value = false
+    }
   }
 
-  /**
-   * Helper: Cari produk berdasarkan ID
-   */
-  function getProductById(productId) {
-    const numericId = Number(productId)
-    return products.value.find((p) => p.id === numericId)
+  function isProductPending(id) {
+    return pendingIds.value.has(String(id))
   }
 
-  /**
-   * Reset ke data default awal
-   */
-  function resetToDefault() {
-    products.value = initialProducts.map((p) => ({ ...p, status: 'active' }))
-    showNotification('Katalog produk direset kembali ke data default.', 'info')
+  async function mutateProduct(id, operation, message) {
+    if (isProductPending(id) || loading.value || isSubmitting.value) return null
+    pendingIds.value.add(String(id))
+    actionError.value = ''
+    try {
+      const result = await operation()
+      const index = products.value.findIndex((p) => String(p.id) === String(id))
+      if (result) {
+        if (index >= 0) products.value[index] = result
+        else products.value.push(result)
+      } else if (index >= 0) products.value.splice(index, 1)
+      showNotification(message)
+      return result || true
+    } catch (err) {
+      actionError.value = err.message
+      throw err
+    } finally {
+      pendingIds.value.delete(String(id))
+    }
   }
 
-  /**
-   * Kosongkan semua data (untuk demonstrasi Friendly Empty State)
-   */
-  function clearAllProducts() {
-    products.value = []
-    showNotification('Seluruh data produk dikosongkan untuk pengujian Empty State.', 'warning')
+  async function toggleProductStatus(id) {
+    const product = getProductById(id)
+    if (!product) return null
+    const status = product.status === 'inactive' ? 'active' : 'inactive'
+    return mutateProduct(
+      id,
+      () => api.update(id, { ...product, status }),
+      `Status "${product.name}" berhasil diperbarui.`,
+    )
   }
 
+  async function updateStock(id, stock) {
+    const product = getProductById(id)
+    if (!product || !Number.isInteger(stock) || stock < 0) return null
+    return mutateProduct(
+      id,
+      () => api.update(id, { ...product, stock }),
+      `Stok "${product.name}" berhasil diperbarui.`,
+    )
+  }
+
+  async function deleteProduct(id) {
+    const product = getProductById(id)
+    return mutateProduct(
+      id,
+      async () => {
+        await api.remove(id)
+        return null
+      },
+      `Produk "${product?.name || id}" berhasil dihapus.`,
+    )
+  }
+
+  const activeProducts = computed(() => products.value.filter((p) => p.status !== 'inactive'))
+  const inactiveProducts = computed(() => products.value.filter((p) => p.status === 'inactive'))
   return {
-    // Shared State
     products,
-    categories: productCategories,
-
-    // Derived States (Computed)
-    totalProducts,
+    categories,
+    loading,
+    error,
+    hasLoaded,
+    isSubmitting,
+    actionError,
+    isMutating: computed(() => isSubmitting.value || pendingIds.value.size > 0),
+    totalProducts: computed(() => products.value.length),
     activeProducts,
     inactiveProducts,
-    totalActiveProducts,
-    totalInactiveProducts,
-
-    // State Mutations
-    addProduct,
-    toggleProductStatus,
-    updateStock,
-    deleteProduct,
+    totalActiveProducts: computed(() => activeProducts.value.length),
+    totalInactiveProducts: computed(() => inactiveProducts.value.length),
+    fetchProducts,
+    fetchProductById,
     getProductById,
-    resetToDefault,
-    clearAllProducts,
-
-    // Feedback Notifications
+    addProduct,
+    updateStock,
+    toggleProductStatus,
+    deleteProduct,
+    isProductPending,
     notificationMessage,
     notificationType,
     isNotificationVisible,
     showNotification,
   }
+}
+
+// Shared server-backed catalog; localStorage is reserved for cart/preferences.
+const state = createProductsState()
+export function useProducts() {
+  return state
 }

@@ -64,7 +64,9 @@ export const useCartStore = defineStore('cart', () => {
   // Add product to cart
   function addToCart(product, quantity = 1) {
     const parsedQty = Math.max(1, parseInt(quantity, 10) || 1)
-    const existingIndex = items.value.findIndex((item) => item.product.id === product.id)
+    const existingIndex = items.value.findIndex(
+      (item) => String(item.product.id) === String(product.id),
+    )
 
     if (existingIndex > -1) {
       const currentQty = items.value[existingIndex].quantity
@@ -83,7 +85,7 @@ export const useCartStore = defineStore('cart', () => {
 
   // Update quantity of an item
   function updateQuantity(productId, quantity) {
-    const item = items.value.find((i) => i.product.id === productId)
+    const item = items.value.find((i) => String(i.product.id) === String(productId))
     if (!item) return
 
     const newQty = parseInt(quantity, 10)
@@ -97,7 +99,7 @@ export const useCartStore = defineStore('cart', () => {
 
   // Increment quantity
   function incrementQuantity(productId) {
-    const item = items.value.find((i) => i.product.id === productId)
+    const item = items.value.find((i) => String(i.product.id) === String(productId))
     if (!item) return
     const maxStock = item.product.stock || 99
     if (item.quantity < maxStock) {
@@ -109,7 +111,7 @@ export const useCartStore = defineStore('cart', () => {
 
   // Decrement quantity
   function decrementQuantity(productId) {
-    const item = items.value.find((i) => i.product.id === productId)
+    const item = items.value.find((i) => String(i.product.id) === String(productId))
     if (!item) return
     if (item.quantity > 1) {
       item.quantity--
@@ -120,7 +122,7 @@ export const useCartStore = defineStore('cart', () => {
 
   // Remove single item from cart
   function removeFromCart(productId) {
-    const index = items.value.findIndex((i) => i.product.id === productId)
+    const index = items.value.findIndex((i) => String(i.product.id) === String(productId))
     if (index > -1) {
       const removedName = items.value[index].product.name
       items.value.splice(index, 1)

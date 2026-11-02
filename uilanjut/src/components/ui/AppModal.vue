@@ -31,18 +31,23 @@ const props = defineProps({
     type: String,
     default: 'warning', // 'warning' | 'info' | 'danger'
   },
+  loading: { type: Boolean, default: false },
+  error: { type: String, default: '' },
+  closeOnConfirm: { type: Boolean, default: true },
 })
 
 const emit = defineEmits(['update:modelValue', 'confirm', 'cancel'])
 
 function handleClose() {
+  if (props.loading) return
   emit('update:modelValue', false)
   emit('cancel')
 }
 
 function handleConfirm() {
+  if (props.loading) return
   emit('confirm')
-  emit('update:modelValue', false)
+  if (props.closeOnConfirm) emit('update:modelValue', false)
 }
 
 function onKeydown(e) {
@@ -76,12 +81,7 @@ onBeforeUnmount(() => {
   <Teleport to="body">
     <Transition name="modal-fade">
       <div v-if="modelValue" class="app-modal-backdrop" @click.self="handleClose">
-        <div
-          class="app-modal-dialog"
-          role="dialog"
-          aria-modal="true"
-          :aria-labelledby="title"
-        >
+        <div class="app-modal-dialog" role="dialog" aria-modal="true" :aria-labelledby="title">
           <!-- Icon Header matching Screenshot 2 & 5 -->
           <div v-if="icon !== 'none'" class="modal-icon-badge" :class="`icon-${icon}`">
             <span v-if="icon === 'warning'" class="icon-emoji">⚠️</span>
@@ -94,6 +94,7 @@ onBeforeUnmount(() => {
           <div class="modal-body">
             <h3 class="modal-title">{{ title }}</h3>
             <p v-if="message" class="modal-message">{{ message }}</p>
+            <p v-if="error" class="api-action-error" role="alert">{{ error }}</p>
             <slot />
           </div>
 
@@ -104,6 +105,7 @@ onBeforeUnmount(() => {
                 variant="secondary"
                 size="sm"
                 class="btn-cancel"
+                :disabled="loading"
                 @click="handleClose"
               >
                 {{ cancelText }}
@@ -112,6 +114,7 @@ onBeforeUnmount(() => {
                 :variant="confirmVariant"
                 size="sm"
                 class="btn-confirm"
+                :loading="loading"
                 @click="handleConfirm"
               >
                 {{ confirmText }}

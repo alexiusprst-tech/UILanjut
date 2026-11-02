@@ -9,8 +9,6 @@ export const useStoreAdmin = defineStore('storeAdmin', () => {
     updateStock,
     deleteProduct,
     toggleProductStatus,
-    resetToDefault,
-    clearAllProducts,
   } = useProducts()
 
   // 1. Profil & Pengaturan Toko
@@ -48,9 +46,7 @@ export const useStoreAdmin = defineStore('storeAdmin', () => {
       customerName: 'Siti Rahmawati',
       customerPhone: '0857-1122-3344',
       date: '11 Okt 2026, 11:05',
-      items: [
-        { name: 'Jam Tangan Pintar Smartwatch Galaxy Fit', qty: 2, price: 899000 },
-      ],
+      items: [{ name: 'Jam Tangan Pintar Smartwatch Galaxy Fit', qty: 2, price: 899000 }],
       total: 1798000,
       paymentMethod: 'GoPay / QRIS',
       status: 'Sedang Dikirim',
@@ -61,9 +57,7 @@ export const useStoreAdmin = defineStore('storeAdmin', () => {
       customerName: 'Alexander Pratama',
       customerPhone: '0878-9900-1122',
       date: '10 Okt 2026, 19:40',
-      items: [
-        { name: 'Jaket Hoodie Streetwear Oversized', qty: 1, price: 349000 },
-      ],
+      items: [{ name: 'Jaket Hoodie Streetwear Oversized', qty: 1, price: 349000 }],
       total: 349000,
       paymentMethod: 'ShopeePay',
       status: 'Selesai',
@@ -74,9 +68,7 @@ export const useStoreAdmin = defineStore('storeAdmin', () => {
       customerName: 'Maya Kusuma',
       customerPhone: '0813-5566-7788',
       date: '10 Okt 2026, 16:15',
-      items: [
-        { name: 'Diffuser Aromaterapi Ultrasonik Minimalis', qty: 2, price: 285000 },
-      ],
+      items: [{ name: 'Diffuser Aromaterapi Ultrasonik Minimalis', qty: 2, price: 285000 }],
       total: 570000,
       paymentMethod: 'Mandiri Livin',
       status: 'Selesai',
@@ -143,8 +135,6 @@ export const useStoreAdmin = defineStore('storeAdmin', () => {
     updateStock,
     deleteProduct,
     toggleProductStatus,
-    resetToDefault,
-    clearAllProducts,
     updateOrderStatus,
     saveStoreSettings,
   }

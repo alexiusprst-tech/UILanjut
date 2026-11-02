@@ -1,8 +1,10 @@
 <script setup>
+import { onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useStoreAdmin } from '@/stores/storeAdmin'
 import { useProducts } from '@/composables/useProducts'
 import { formatRupiah } from '@/data/products'
+import ProductLoadState from '@/components/product/ProductLoadState.vue'
 
 const adminStore = useStoreAdmin()
 const {
@@ -10,7 +12,11 @@ const {
   totalProducts,
   totalActiveProducts,
   totalInactiveProducts,
+  loading,
+  error,
+  fetchProducts,
 } = useProducts()
+onMounted(fetchProducts)
 </script>
 
 <template>
@@ -20,7 +26,8 @@ const {
       <div>
         <h1 class="page-title">Ringkasan &amp; Analisis Toko</h1>
         <p class="page-subtitle">
-          Pantau statistik real-time dan lacak status seluruh produk yang dikelola pada katalog SHOPNEST.
+          Pantau statistik real-time dan lacak status seluruh produk yang dikelola pada katalog
+          SHOPNEST.
         </p>
       </div>
 
@@ -45,7 +52,14 @@ const {
          MODUL 4: 3 METRIC CARDS (DERIVED STATE VIA COMPUTED)
          Screenshots 1 & 3 (Total Products, Active Products, Inactive Products)
          =================================================================== -->
-    <div class="modul4-metrics-grid">
+    <ProductLoadState
+      v-if="loading || error"
+      :loading="loading"
+      :error="error"
+      :count="3"
+      @retry="fetchProducts"
+    />
+    <div v-else class="modul4-metrics-grid">
       <!-- Card 1: TOTAL PRODUK (TOTAL EVENTS) -->
       <div class="modul4-metric-card card">
         <span class="modul4-metric-label">TOTAL PRODUK</span>
@@ -71,7 +85,7 @@ const {
     <!-- ===================================================================
          MODUL 4: RECENT PRODUCTS STATUS OVERVIEW (Screenshots 1 & 3)
          =================================================================== -->
-    <div class="card recent-status-card">
+    <div v-if="!loading && !error" class="card recent-status-card">
       <div class="recent-status-header">
         <div>
           <h2 class="recent-status-title">Status Produk Terkini</h2>
@@ -122,7 +136,9 @@ const {
                 </span>
               </td>
               <td>
-                <span class="quota-text">{{ product.stock > 0 ? `${product.stock} Tersedia` : 'Habis' }}</span>
+                <span class="quota-text">{{
+                  product.stock > 0 ? `${product.stock} Tersedia` : 'Habis'
+                }}</span>
               </td>
               <td>
                 <span
@@ -294,7 +310,9 @@ const {
   flex-direction: column;
   gap: 0.35rem;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .modul4-metric-card:hover {
