@@ -16,6 +16,7 @@ defineProps({
     type: Boolean,
     default: false,
   },
+  loading: { type: Boolean, default: false },
 })
 
 defineEmits(['click'])
@@ -24,10 +25,12 @@ defineEmits(['click'])
 <template>
   <button
     :type="type"
-    :disabled="disabled"
+    :disabled="disabled || loading"
+    :aria-busy="loading"
     :class="['app-button', `btn-${variant}`, `btn-${size}`, { 'is-disabled': disabled }]"
     @click="$emit('click', $event)"
   >
+    <span v-if="loading" class="btn-spinner" aria-hidden="true"></span>
     <slot />
   </button>
 </template>
@@ -47,7 +50,11 @@ defineEmits(['click'])
   justify-content: center;
   gap: 0.5rem;
   text-align: center;
-  transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
   line-height: 1.5;
 }
 

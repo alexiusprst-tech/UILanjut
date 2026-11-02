@@ -306,3 +306,107 @@
 .gap-8 {
   gap: var(--space-8);
 }
+/* Modul 6: server loading, recovery, and form feedback in the existing theme. */
+.api-skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+  gap: 1.5rem;
+  width: 100%;
+}
+.api-skeleton-card {
+  padding: 1rem;
+  background: white;
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 16px;
+}
+.api-skeleton {
+  background: linear-gradient(100deg, #edf1f5 25%, #fafbfc 45%, #edf1f5 65%);
+  background-size: 250% 100%;
+  animation: api-shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+.api-skeleton-image {
+  aspect-ratio: 4 / 3;
+  margin-bottom: 1rem;
+}
+.api-skeleton-line {
+  height: 18px;
+  margin-top: 12px;
+}
+.api-skeleton-line.short {
+  width: 60%;
+}
+@keyframes api-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+.api-error-state,
+.api-empty-state {
+  padding: 2rem;
+  text-align: center;
+  border-radius: 16px;
+  border: 1px solid #fecaca;
+  background: #fff7f7;
+  color: #991b1b;
+}
+.api-error-state h2 {
+  font-size: 1.15rem;
+  margin: 0.5rem 0;
+}
+.api-error-state p {
+  margin-bottom: 1rem;
+}
+.api-empty-state {
+  background: white;
+  border-color: var(--color-border, #e2e8f0);
+  color: var(--color-text-secondary, #64748b);
+}
+.api-action-error,
+.api-field-error {
+  color: #b91c1c;
+  font-size: 0.85rem;
+  margin-top: 0.4rem;
+}
+.input-field[aria-invalid='true'] {
+  border-color: #dc2626;
+}
+.product-form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.btn-spinner {
+  width: 1em;
+  height: 1em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  animation: api-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes api-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.api-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+@media (prefers-reduced-motion: reduce) {
+  .api-skeleton,
+  .btn-spinner {
+    animation: none;
+  }
+}

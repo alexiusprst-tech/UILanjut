@@ -1,0 +1,84 @@
+MODUL 6 - INTEGRASI UI DENGAN LAYANAN SISTEM
+Adaptasi untuk project e-commerce SHOPNEST yang sudah ada.
+Tanggal implementasi: 2 November 2026.
+
+Referensi yang dipelajari:
+C:\Users\Acer\Downloads\Modul 6 - Integrasi UI dengan Layanan Sistem.pdf
+Modul menggunakan contoh Gatherly/events. Sesuai permintaan pengguna,
+implementasi diterapkan ke produk SHOPNEST, tanpa membuat project/website baru.
+
+Pemetaan kebutuhan modul:
+1. Konfigurasi REST: .env memakai VITE_API_URL dan VITE_API_RESOURCE.
+   Resource tetap events sesuai resource MockAPI pengguna. Isinya sekarang
+   produk e-commerce, dengan name, category, price, stock, description,
+   image, images, features, status, rating, reviewsCount, dan isFeatured.
+   Jika resource diganti menjadi products di dashboard MockAPI, ubah
+   VITE_API_RESOURCE=products lalu restart Vite.
+2. Lapisan layanan: src/services/productApi.js memakai fetch, async/await,
+   response.ok, JSON, AbortController dan timeout 15 detik.
+   src/composables/useProducts.js menjadi satu state bersama untuk admin
+   dan storefront. Data katalog tidak lagi dibaca/ditulis ke localStorage.
+3. Katalog dan admin memuat GET saat onMounted, dengan urutan loading,
+   error + Coba Lagi, kosong, lalu daftar produk. Muat Ulang meminta data
+   terbaru ke server. Respons [] tidak diganti data contoh.
+4. Detail /products/:id mengambil GET /events/:id secara langsung, termasuk
+   ketika URL dibuka tanpa mengunjungi katalog. Error koneksi dapat dicoba
+   lagi; 404 dan produk nonaktif tampil sebagai produk tidak ditemukan.
+5. Form admin memvalidasi setiap kolom. POST memakai ID dari server.
+   Spinner dan tombol disabled mencegah pengiriman ganda. Form hanya
+   direset dan tab produk aktif dibuka setelah server berhasil menyimpan.
+   Saat gagal, isian tetap tersimpan agar pengguna dapat mencoba lagi.
+6. Perubahan stok/status menggunakan PUT. Hapus menggunakan DELETE lewat
+   dialog konfirmasi; dialog tetap terbuka saat gagal dan menampilkan pesan.
+   Daftar dan keranjang terkait dibersihkan hanya setelah DELETE berhasil.
+7. AppButton mendukung loading; AppModal mendukung loading, error, dan
+   closeOnConfirm tanpa mengubah perilaku default halaman lain.
+8. Skeleton, error card, spinner, pesan per kolom, dan reduced-motion
+   mengikuti warna dan komponen project saat ini.
+
+Data awal:
+- 20 produk bawaan project telah dimigrasikan ke MockAPI.
+- Lima contoh events dari PDF dicadangkan dalam mockapi-before-products.json
+  sebelum disesuaikan menjadi produk.
+- scripts/migrate-products.mjs dapat diperiksa dengan npm run migrate:products.
+  Opsi -- --apply melakukan migrasi, melewati nama produk yang sudah ada.
+  Script ini adalah alat migrasi awal, bukan sumber data saat aplikasi berjalan.
+- .env disertakan dalam commit sesuai permintaan pengguna untuk pengumpulan
+  Modul 6; .env.example tersedia untuk konfigurasi ulang.
+- Data pesanan contoh dan fitur event lama tidak termasuk lingkup integrasi ini.
+  Keranjang dan preferensi tetap lokal; ini sesuai pemisahan peran di modul.
+
+Menjalankan:
+cd D:\ui\uilanjut
+npm run dev
+Buka http://127.0.0.1:5173/products dan /dashboard/products.
+Restart dev server setelah mengubah .env.
+
+Verifikasi otomatis:
+npm test
+npm run build
+node scripts/smoke-products.mjs
+node scripts/smoke-products.mjs --write
+Opsi --write membuat satu produk uji, memeriksa POST/GET/PUT/DELETE,
+lalu menghapus hanya produk uji tersebut dan memastikan jumlah katalog tetap.
+Sepuluh tes otomatis mencakup HTTP error, timeout, loading, retry,
+empty state, validasi, double submit, kegagalan mutasi, detail string ID,
+dan kompatibilitas ID keranjang lama dengan ID string dari MockAPI.
+Hasil: 10/10 lolos. Build produksi dan uji CRUD langsung ke MockAPI lolos.
+Produk uji sudah dibersihkan; katalog server tetap berisi 20 produk.
+
+Verifikasi visual lanjutan di Chrome DevTools:
+- Network > Slow 3G, lalu Muat Ulang: skeleton muncul selama GET.
+- Network > Offline, lalu Muat Ulang: error dan Coba Lagi muncul.
+- Kembali No throttling, tekan Coba Lagi: katalog pulih.
+- Request blocking URL resource atau endpoint tidak valid: error ramah.
+- Untuk empty state, gunakan endpoint pengujian yang mengembalikan [];
+  jangan mengosongkan katalog aktif hanya untuk demonstrasi.
+- Tambah dengan kolom kosong: error per kolom, tanpa POST.
+- Offline saat submit/hapus: isian/produk tetap, tombol kembali aktif.
+- URL /products/ID_TIDAK_ADA: produk tidak ditemukan, tautan kembali tersedia.
+
+Batas verifikasi visual:
+Computer Use dihentikan otomatis karena tidak dapat memastikan URL Chrome
+dengan cukup yakin untuk menerapkan kebijakannya. Tidak ada klaim bahwa
+pemeriksaan screenshot atau pengujian Slow 3G/Offline lewat DevTools selesai.

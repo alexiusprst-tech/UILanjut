@@ -9,11 +9,35 @@ import ProductCard from '@/components/ProductCard.vue'
 import EmptyState from '@/components/EmptyState.vue'
 import AppCard from '@/components/ui/AppCard.vue'
 import AppButton from '@/components/ui/AppButton.vue'
+import ProductLoadState from '@/components/product/ProductLoadState.vue'
 
 const route = useRoute()
 const router = useRouter()
 const cartStore = useCartStore()
-const { getProductById, products } = useProducts()
+const { getProductById, products, fetchProductById } = useProducts()
+const detailLoading = ref(true)
+const detailError = ref('')
+const notFound = ref(false)
+let detailRequest = 0
+
+async function loadProduct() {
+  const request = ++detailRequest
+  const id = route.params.id
+  detailLoading.value = true
+  detailError.value = ''
+  notFound.value = false
+  try {
+    const result = await fetchProductById(id)
+    if (request === detailRequest) notFound.value = result.status === 'inactive'
+  } catch (error) {
+    if (request !== detailRequest) return
+    if (error.status === 404) notFound.value = true
+    else detailError.value = error.message
+  } finally {
+    if (request === detailRequest) detailLoading.value = false
+  }
+}
+watch(() => route.params.id, loadProduct, { immediate: true })
 
 const quantity = ref(1)
 const activeImageIndex = ref(0)
@@ -38,9 +62,14 @@ watch(
 // Related products derived from centralized products state
 const relatedProducts = computed(() => {
   if (!product.value) return []
-  const currentId = Number(product.value.id)
+  const currentId = String(product.value.id)
   return products.value
-    .filter((p) => p.id !== currentId && p.category === product.value.category && p.status !== 'inactive')
+    .filter(
+      (p) =>
+        String(p.id) !== currentId &&
+        p.category === product.value.category &&
+        p.status !== 'inactive',
+    )
     .slice(0, 4)
 })
 
@@ -117,9 +146,21 @@ function onImgError(event) {
       <Breadcrumbs :items="breadcrumbItems" />
 
       <!-- Case 1: Product Found -->
-      <div v-if="product" class="product-detail-page">
+      <ProductLoadState
+        v-if="detailLoading || detailError"
+        :loading="detailLoading"
+        :error="detailError"
+        :count="1"
+        @retry="loadProduct"
+      />
+      <div v-else-if="product && !notFound" class="product-detail-page">
         <!-- Detail Header -->
-        <AppButton variant="secondary" size="sm" class="btn-back" @click="$router.push('/products')">
+        <AppButton
+          variant="secondary"
+          size="sm"
+          class="btn-back"
+          @click="$router.push('/products')"
+        >
           &larr; Kembali ke Daftar Produk
         </AppButton>
 
@@ -275,7 +316,12 @@ function onImgError(event) {
                 🛒 Tambah ke Keranjang
               </AppButton>
 
-              <AppButton variant="secondary" size="md" class="btn-buy-secondary" @click="handleBuyNow">
+              <AppButton
+                variant="secondary"
+                size="md"
+                class="btn-buy-secondary"
+                @click="handleBuyNow"
+              >
                 ⚡ Beli Sekarang Langsung
               </AppButton>
 

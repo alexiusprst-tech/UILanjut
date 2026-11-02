@@ -9,12 +9,21 @@ import AppCard from '@/components/ui/AppCard.vue'
 import AppButton from '@/components/ui/AppButton.vue'
 import Breadcrumbs from '@/components/Breadcrumbs.vue'
 import EmptyState from '@/components/EmptyState.vue'
+import ProductLoadState from '@/components/product/ProductLoadState.vue'
 
 const route = useRoute()
 const router = useRouter()
 
 // Single Source of Truth: Centralized reactive products state
-const { activeProducts, categories, totalActiveProducts, resetToDefault } = useProducts()
+const {
+  activeProducts,
+  categories,
+  totalActiveProducts,
+  fetchProducts,
+  loading,
+  error,
+  isMutating,
+} = useProducts()
 
 const searchQuery = ref('')
 const selectedCategory = ref('all')
@@ -22,6 +31,7 @@ const sortBy = ref('default')
 
 // Initialize from route query if present
 onMounted(() => {
+  fetchProducts()
   if (route.query.category) {
     selectedCategory.value = route.query.category
   }
@@ -73,9 +83,7 @@ const filteredProducts = computed(() => {
 
   // Filter by category
   if (selectedCategory.value && selectedCategory.value !== 'all') {
-    result = result.filter(
-      (p) => p.category.toLowerCase() === selectedCategory.value.toLowerCase(),
-    )
+    result = result.filter((p) => p.category.toLowerCase() === selectedCategory.value.toLowerCase())
   }
 
   // Filter by search query
@@ -131,7 +139,21 @@ const breadcrumbItems = computed(() => {
           </p>
         </div>
         <div class="results-count-badge">
-          <span>{{ filteredProducts.length }} Produk Ditemukan</span>
+          <span>{{
+            loading
+              ? 'Memuat produk...'
+              : error
+                ? 'Katalog belum tersedia'
+                : `${filteredProducts.length} Produk Ditemukan`
+          }}</span>
+          <AppButton
+            size="sm"
+            variant="secondary"
+            :loading="loading"
+            :disabled="isMutating"
+            @click="fetchProducts"
+            >Muat Ulang</AppButton
+          >
         </div>
       </div>
 
@@ -171,7 +193,13 @@ const breadcrumbItems = computed(() => {
       <!-- ===================================================================
            ADAPTIVE PRODUCTS GRID (v-for ProductCard)
            =================================================================== -->
-      <div v-if="filteredProducts.length > 0" class="products-grid">
+      <ProductLoadState
+        v-if="loading || error"
+        :loading="loading"
+        :error="error"
+        @retry="fetchProducts"
+      />
+      <div v-else-if="filteredProducts.length > 0" class="products-grid">
         <ProductCard
           v-for="product in filteredProducts"
           :key="product.id"
@@ -196,8 +224,8 @@ const breadcrumbItems = computed(() => {
             <RouterLink to="/dashboard/products" class="btn btn-primary btn-lg">
               <span>Buka Dashboard Admin &rarr;</span>
             </RouterLink>
-            <AppButton variant="secondary" size="md" @click="resetToDefault">
-              <span>Muat Ulang Produk Contoh</span>
+            <AppButton variant="secondary" size="md" @click="fetchProducts">
+              <span>Muat Ulang Produk</span>
             </AppButton>
           </div>
         </div>

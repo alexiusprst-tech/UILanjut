@@ -1,9 +1,11 @@
 <script setup>
 import { RouterLink, RouterView, useRoute } from 'vue-router'
 import { useStoreAdmin } from '@/stores/storeAdmin'
+import { useProducts } from '@/composables/useProducts'
 
 const adminStore = useStoreAdmin()
 const route = useRoute()
+const { notificationMessage, notificationType, isNotificationVisible } = useProducts()
 
 const navItems = [
   {
@@ -18,7 +20,9 @@ const navItems = [
     name: 'admin-products',
     label: 'Kelola Produk',
     icon: 'm21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9',
-    badge: adminStore.productList.length,
+    get badge() {
+      return adminStore.productList.length
+    },
   },
   {
     to: '/dashboard/orders',
@@ -183,9 +187,14 @@ const navItems = [
 
       <!-- Admin Toast Feedback -->
       <transition name="toast-slide">
-        <div v-if="adminStore.isToastVisible" class="admin-toast" :class="adminStore.toastType">
+        <div
+          v-if="adminStore.isToastVisible || isNotificationVisible"
+          class="admin-toast"
+          :class="isNotificationVisible ? notificationType : adminStore.toastType"
+          role="status"
+        >
           <span class="toast-dot"></span>
-          <span>{{ adminStore.toastMessage }}</span>
+          <span>{{ isNotificationVisible ? notificationMessage : adminStore.toastMessage }}</span>
         </div>
       </transition>
     </main>

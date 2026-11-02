@@ -1,9 +1,11 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useProducts } from '@/composables/useProducts'
 import { formatRupiah, categories } from '@/data/products'
 import AppButton from '@/components/ui/AppButton.vue'
 import AppModal from '@/components/ui/AppModal.vue'
+import ProductLoadState from '@/components/product/ProductLoadState.vue'
+import { useCartStore } from '@/stores/cart'
 
 // ===========================================================================
 // SINGLE SOURCE OF TRUTH — seluruh data berasal dari composable useProducts
@@ -17,9 +19,16 @@ const {
   updateStock,
   deleteProduct,
   toggleProductStatus,
-  resetToDefault,
-  clearAllProducts,
+  fetchProducts,
+  loading,
+  error,
+  isSubmitting,
+  isMutating,
+  actionError,
+  isProductPending,
 } = useProducts()
+const cartStore = useCartStore()
+onMounted(fetchProducts)
 
 // Tab: 'active' | 'create' | 'inactive'
 const activeTab = ref('active')
@@ -46,8 +55,10 @@ function createEmptyForm() {
 const newForm = ref(createEmptyForm())
 const formError = ref('')
 const formSuccess = ref('')
+const fieldErrors = ref({})
 
 function handleTabChange(tab) {
+  if (isSubmitting.value) return
   activeTab.value = tab
   formError.value = ''
   formSuccess.value = ''
@@ -56,25 +67,44 @@ function handleTabChange(tab) {
 // ===========================================================================
 // CREATE — validasi form + alert error / sukses
 // ===========================================================================
-function submitNewProduct() {
+async function submitNewProduct() {
+  if (isSubmitting.value || loading.value || isMutating.value) return
   formError.value = ''
   formSuccess.value = ''
 
   const f = newForm.value
-  if (!f.name.trim() || !f.price || f.stock === '' || !f.description.trim()) {
-    formError.value = 'Harap isi semua bidang wajib sebelum mempublikasikan produk!'
+  fieldErrors.value = {}
+  if (!f.name.trim()) fieldErrors.value.name = 'Nama produk wajib diisi.'
+  if (!categories.some((c) => c.id !== 'all' && c.id === f.category))
+    fieldErrors.value.category = 'Pilih kategori produk.'
+  if (!Number.isFinite(Number(f.price)) || Number(f.price) < 1000)
+    fieldErrors.value.price = 'Harga minimal Rp1.000.'
+  if (f.stock === '' || !Number.isInteger(Number(f.stock)) || Number(f.stock) < 0)
+    fieldErrors.value.stock = 'Stok harus bilangan bulat minimal 0.'
+  if (!f.description.trim()) fieldErrors.value.description = 'Deskripsi produk wajib diisi.'
+  if (f.image && !/^https?:\/\//i.test(f.image))
+    fieldErrors.value.image = 'Gunakan URL gambar http atau https.'
+  if (Object.keys(fieldErrors.value).length) {
+    formError.value = 'Periksa kembali kolom yang ditandai sebelum mempublikasikan produk.'
     return
   }
-
-  const created = addProduct({ ...f })
-  formSuccess.value = `Produk "${created.name}" berhasil dipublikasikan dan sekarang aktif di katalog!`
-  newForm.value = createEmptyForm()
+  try {
+    const created = await addProduct({ ...f })
+    if (!created) return
+    formSuccess.value = `Produk "${created.name}" berhasil dipublikasikan dan sekarang aktif di katalog!`
+    newForm.value = createEmptyForm()
+    activeTab.value = 'active'
+  } catch (error) {
+    formError.value = error.message
+  }
 }
 
 function resetForm() {
+  if (isSubmitting.value) return
   newForm.value = createEmptyForm()
   formError.value = ''
   formSuccess.value = ''
+  fieldErrors.value = {}
 }
 
 // ===========================================================================
@@ -82,8 +112,8 @@ function resetForm() {
 // ===========================================================================
 const isToggleModalOpen = ref(false)
 const isDeleteModalOpen = ref(false)
-const isClearModalOpen = ref(false)
 const selectedProduct = ref(null)
+const modalError = ref('')
 
 const isReactivating = computed(() => selectedProduct.value?.status === 'inactive')
 
@@ -99,31 +129,52 @@ const toggleModalMessage = computed(() => {
 })
 
 function promptToggleStatus(product) {
+  modalError.value = ''
   selectedProduct.value = product
   isToggleModalOpen.value = true
 }
 
-function confirmToggleStatus() {
-  if (selectedProduct.value) toggleProductStatus(selectedProduct.value.id)
-  selectedProduct.value = null
+async function confirmToggleStatus() {
+  if (!selectedProduct.value || isMutating.value) return
+  modalError.value = ''
+  try {
+    const result = await toggleProductStatus(selectedProduct.value.id)
+    if (result) {
+      isToggleModalOpen.value = false
+      selectedProduct.value = null
+    }
+  } catch (error) {
+    modalError.value = error.message
+  }
 }
 
 function promptDelete(product) {
+  modalError.value = ''
   selectedProduct.value = product
   isDeleteModalOpen.value = true
 }
 
-function confirmDelete() {
-  if (selectedProduct.value) deleteProduct(selectedProduct.value.id)
-  selectedProduct.value = null
+async function confirmDelete() {
+  if (!selectedProduct.value || isMutating.value) return
+  modalError.value = ''
+  const id = selectedProduct.value.id
+  try {
+    const deleted = await deleteProduct(id)
+    if (!deleted) return
+    cartStore.items = cartStore.items.filter((item) => String(item.product.id) !== String(id))
+    isDeleteModalOpen.value = false
+    selectedProduct.value = null
+  } catch (error) {
+    modalError.value = error.message
+  }
 }
 
-function confirmClearAll() {
-  clearAllProducts()
-}
-
-function handleStockStep(id, currentStock, delta) {
-  updateStock(id, currentStock + delta)
+async function handleStockStep(id, currentStock, delta) {
+  try {
+    await updateStock(id, currentStock + delta)
+  } catch {
+    /* actionError is displayed below */
+  }
 }
 
 function onImgError(event) {
@@ -161,13 +212,25 @@ const displayedProducts = computed(() =>
       </div>
 
       <div class="header-action-group">
-        <AppButton variant="secondary" size="sm" @click="resetToDefault">
-          ↺ Reset Data Contoh
-        </AppButton>
-        <AppButton variant="danger-outline" size="sm" @click="isClearModalOpen = true">
-          Kosongkan Katalog
+        <AppButton
+          variant="secondary"
+          size="sm"
+          :loading="loading"
+          :disabled="isMutating"
+          @click="fetchProducts"
+        >
+          ↺ Muat Ulang Produk
         </AppButton>
       </div>
+    </div>
+
+    <div v-if="formSuccess" class="alert-banner alert-success" role="status">{{ formSuccess }}</div>
+    <div
+      v-if="actionError && activeTab !== 'create' && !isDeleteModalOpen && !isToggleModalOpen"
+      class="alert-banner alert-error"
+      role="alert"
+    >
+      {{ actionError }}
     </div>
 
     <!-- ===================================================================
@@ -227,92 +290,141 @@ const displayedProducts = computed(() =>
         <span>{{ formError }}</span>
       </div>
 
-      <div v-if="formSuccess" class="alert-banner alert-success" role="status">
-        <span class="alert-icon">🎉</span>
-        <span>{{ formSuccess }}</span>
-      </div>
-
       <form class="create-product-form" novalidate @submit.prevent="submitNewProduct">
-        <div class="form-group">
-          <label for="input-name" class="form-label">Nama Produk *</label>
-          <input
-            id="input-name"
-            v-model="newForm.name"
-            type="text"
-            class="input-field"
-            placeholder="cth. Wireless Earbuds Sony WF-1000XM5"
-          />
-        </div>
-
-        <div class="form-grid-2">
+        <fieldset class="product-form-fields" :disabled="isSubmitting || loading || isMutating">
           <div class="form-group">
-            <label for="input-category" class="form-label">Kategori Produk *</label>
-            <select id="input-category" v-model="newForm.category" class="input-field">
-              <option
-                v-for="cat in categories.filter((c) => c.id !== 'all')"
-                :key="cat.id"
-                :value="cat.id"
-              >
-                {{ cat.name }}
-              </option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="input-price" class="form-label">Harga Jual (Rp) *</label>
+            <label for="input-name" class="form-label">Nama Produk *</label>
             <input
-              id="input-price"
-              v-model="newForm.price"
-              type="number"
-              class="input-field"
-              placeholder="cth. 1500000"
-              min="1000"
-            />
-          </div>
-        </div>
-
-        <div class="form-grid-2">
-          <div class="form-group">
-            <label for="input-badge" class="form-label">Badge Promo</label>
-            <input
-              id="input-badge"
-              v-model="newForm.badge"
+              id="input-name"
+              v-model="newForm.name"
+              :aria-invalid="!!fieldErrors.name"
+              aria-describedby="error-name"
               type="text"
               class="input-field"
-              placeholder="cth. Best Seller / Baru"
+              placeholder="cth. Wireless Earbuds Sony WF-1000XM5"
             />
+            <p id="error-name" v-if="fieldErrors.name" class="api-field-error">
+              {{ fieldErrors.name }}
+            </p>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="input-category" class="form-label">Kategori Produk *</label>
+              <select
+                id="input-category"
+                v-model="newForm.category"
+                class="input-field"
+                :aria-invalid="!!fieldErrors.category"
+                aria-describedby="error-category"
+              >
+                <option
+                  v-for="cat in categories.filter((c) => c.id !== 'all')"
+                  :key="cat.id"
+                  :value="cat.id"
+                >
+                  {{ cat.name }}
+                </option>
+              </select>
+              <p id="error-category" v-if="fieldErrors.category" class="api-field-error">
+                {{ fieldErrors.category }}
+              </p>
+            </div>
+
+            <div class="form-group">
+              <label for="input-price" class="form-label">Harga Jual (Rp) *</label>
+              <input
+                id="input-price"
+                v-model="newForm.price"
+                :aria-invalid="!!fieldErrors.price"
+                aria-describedby="error-price"
+                type="number"
+                class="input-field"
+                placeholder="cth. 1500000"
+                min="1000"
+              />
+              <p id="error-price" v-if="fieldErrors.price" class="api-field-error">
+                {{ fieldErrors.price }}
+              </p>
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="input-badge" class="form-label">Badge Promo</label>
+              <input
+                id="input-badge"
+                v-model="newForm.badge"
+                type="text"
+                class="input-field"
+                placeholder="cth. Best Seller / Baru"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="input-stock" class="form-label">Jumlah Stok *</label>
+              <input
+                id="input-stock"
+                v-model="newForm.stock"
+                :aria-invalid="!!fieldErrors.stock"
+                aria-describedby="error-stock"
+                type="number"
+                class="input-field"
+                placeholder="100"
+                min="0"
+              />
+              <p id="error-stock" v-if="fieldErrors.stock" class="api-field-error">
+                {{ fieldErrors.stock }}
+              </p>
+            </div>
           </div>
 
           <div class="form-group">
-            <label for="input-stock" class="form-label">Jumlah Stok *</label>
-            <input
-              id="input-stock"
-              v-model="newForm.stock"
-              type="number"
+            <label for="input-description" class="form-label">Deskripsi Produk *</label>
+            <textarea
+              id="input-description"
+              v-model="newForm.description"
+              :aria-invalid="!!fieldErrors.description"
+              aria-describedby="error-description"
               class="input-field"
-              placeholder="100"
-              min="0"
-            />
+              rows="4"
+              placeholder="Jelaskan spesifikasi, fitur utama, dan keunggulan produk..."
+            ></textarea>
+            <p id="error-description" v-if="fieldErrors.description" class="api-field-error">
+              {{ fieldErrors.description }}
+            </p>
           </div>
-        </div>
 
-        <div class="form-group">
-          <label for="input-description" class="form-label">Deskripsi Produk *</label>
-          <textarea
-            id="input-description"
-            v-model="newForm.description"
-            class="input-field"
-            rows="4"
-            placeholder="Jelaskan spesifikasi, fitur utama, dan keunggulan produk..."
-          ></textarea>
-        </div>
+          <div class="form-group">
+            <label for="input-image" class="form-label">URL Gambar Produk</label>
+            <input
+              id="input-image"
+              v-model="newForm.image"
+              type="url"
+              class="input-field"
+              :aria-invalid="!!fieldErrors.image"
+              aria-describedby="error-image"
+              placeholder="https://..."
+            />
+            <p id="error-image" v-if="fieldErrors.image" class="api-field-error">
+              {{ fieldErrors.image }}
+            </p>
+          </div>
 
-        <div class="form-actions-row">
-          <AppButton variant="secondary" size="md" @click="resetForm">Batal</AppButton>
-          <AppButton id="btn-publish-product" type="submit" variant="primary" size="md">
-            🚀 Publikasikan Produk
-          </AppButton>
-        </div>
+          <div class="form-actions-row">
+            <AppButton variant="secondary" size="md" @click="resetForm">Batal</AppButton>
+            <AppButton
+              id="btn-publish-product"
+              type="submit"
+              variant="primary"
+              size="md"
+              :loading="isSubmitting"
+              :disabled="loading"
+            >
+              {{ isSubmitting ? 'Menyimpan Produk...' : '🚀 Publikasikan Produk' }}
+            </AppButton>
+          </div>
+        </fieldset>
       </form>
     </div>
 
@@ -360,7 +472,13 @@ const displayedProducts = computed(() =>
       </div>
 
       <!-- Empty State per tab -->
-      <div v-if="displayedProducts.length === 0" class="empty-tab-state">
+      <ProductLoadState
+        v-if="loading || error"
+        :loading="loading"
+        :error="error"
+        @retry="fetchProducts"
+      />
+      <div v-else-if="displayedProducts.length === 0" class="empty-tab-state">
         <div class="empty-tab-icon">{{ activeTab === 'inactive' ? '🗂️' : '📦' }}</div>
         <h3 class="empty-tab-title">
           {{ activeTab === 'inactive' ? 'Belum Ada Produk Nonaktif' : 'Belum Ada Produk Aktif' }}
@@ -424,7 +542,7 @@ const displayedProducts = computed(() =>
                   <button
                     type="button"
                     class="stock-step-btn"
-                    :disabled="product.stock <= 0"
+                    :disabled="product.stock <= 0 || isMutating"
                     title="Kurangi 1"
                     @click="handleStockStep(product.id, product.stock, -1)"
                   >
@@ -437,6 +555,7 @@ const displayedProducts = computed(() =>
                     type="button"
                     class="stock-step-btn"
                     title="Tambah 1"
+                    :disabled="isMutating"
                     @click="handleStockStep(product.id, product.stock, 1)"
                   >
                     +
@@ -450,6 +569,7 @@ const displayedProducts = computed(() =>
                   size="sm"
                   class="card-action-btn"
                   @click="promptToggleStatus(product)"
+                  :disabled="isMutating"
                 >
                   ✅ Nonaktifkan
                 </AppButton>
@@ -458,6 +578,8 @@ const displayedProducts = computed(() =>
                   size="sm"
                   class="card-action-btn"
                   @click="promptDelete(product)"
+                  :loading="isProductPending(product.id)"
+                  :disabled="isMutating"
                 >
                   🗑️ Hapus
                 </AppButton>
@@ -475,6 +597,7 @@ const displayedProducts = computed(() =>
                   size="sm"
                   class="card-action-btn"
                   @click="promptToggleStatus(product)"
+                  :disabled="isMutating"
                 >
                   ↺ Aktifkan Kembali
                 </AppButton>
@@ -483,6 +606,8 @@ const displayedProducts = computed(() =>
                   size="sm"
                   class="card-action-btn"
                   @click="promptDelete(product)"
+                  :loading="isProductPending(product.id)"
+                  :disabled="isMutating"
                 >
                   🗑️ Hapus
                 </AppButton>
@@ -502,6 +627,9 @@ const displayedProducts = computed(() =>
       cancel-text="Batal"
       :confirm-variant="isReactivating ? 'success' : 'danger'"
       icon="warning"
+      :loading="isMutating"
+      :error="modalError"
+      :close-on-confirm="false"
       @confirm="confirmToggleStatus"
     />
 
@@ -514,19 +642,10 @@ const displayedProducts = computed(() =>
       cancel-text="Batal"
       confirm-variant="danger"
       icon="warning"
+      :loading="isMutating"
+      :error="modalError"
+      :close-on-confirm="false"
       @confirm="confirmDelete"
-    />
-
-    <!-- Modal: Kosongkan Katalog (demo Empty State) -->
-    <AppModal
-      v-model="isClearModalOpen"
-      title="Kosongkan Seluruh Katalog?"
-      message="Semua produk akan dihapus dari toko. Gunakan 'Reset Data Contoh' untuk memuat ulang produk bawaan."
-      confirm-text="Ya, Kosongkan"
-      cancel-text="Batal"
-      confirm-variant="danger"
-      icon="warning"
-      @confirm="confirmClearAll"
     />
   </div>
 </template>

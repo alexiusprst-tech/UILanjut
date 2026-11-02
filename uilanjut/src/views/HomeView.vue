@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import { categories } from '@/data/products'
 import { useProducts } from '@/composables/useProducts'
@@ -7,8 +7,10 @@ import ProductCard from '@/components/ProductCard.vue'
 import CategoryCard from '@/components/CategoryCard.vue'
 import AppButton from '@/components/ui/AppButton.vue'
 import AppCard from '@/components/ui/AppCard.vue'
+import ProductLoadState from '@/components/product/ProductLoadState.vue'
 
-const { activeProducts } = useProducts()
+const { activeProducts, loading, error, fetchProducts } = useProducts()
+onMounted(fetchProducts)
 const featuredProducts = computed(() => activeProducts.value.filter((p) => p.isFeatured))
 const mainCategories = categories.filter((c) => c.id !== 'all')
 </script>
@@ -35,7 +37,12 @@ const mainCategories = categories.filter((c) => c.id !== 'all')
           </p>
 
           <div class="hero-actions">
-            <AppButton variant="primary" size="md" class="hero-btn-primary" @click="$router.push('/products')">
+            <AppButton
+              variant="primary"
+              size="md"
+              class="hero-btn-primary"
+              @click="$router.push('/products')"
+            >
               <span>Belanja Sekarang</span>
               <svg
                 class="btn-arrow"
@@ -53,7 +60,12 @@ const mainCategories = categories.filter((c) => c.id !== 'all')
               </svg>
             </AppButton>
 
-            <AppButton variant="secondary" size="md" class="hero-btn-secondary" @click="$router.push('/cart')">
+            <AppButton
+              variant="secondary"
+              size="md"
+              class="hero-btn-secondary"
+              @click="$router.push('/cart')"
+            >
               <svg
                 class="cart-hero-icon"
                 xmlns="http://www.w3.org/2000/svg"
@@ -267,7 +279,7 @@ const mainCategories = categories.filter((c) => c.id !== 'all')
               spesifikasinya.
             </p>
           </div>
-          <RouterLink to="/products" style="text-decoration: none;">
+          <RouterLink to="/products" style="text-decoration: none">
             <AppButton variant="outline" size="sm">
               <span>Buka Katalog Lengkap</span>
               <svg
@@ -288,9 +300,20 @@ const mainCategories = categories.filter((c) => c.id !== 'all')
           </RouterLink>
         </div>
 
-        <div class="products-grid">
+        <ProductLoadState
+          v-if="loading || error"
+          :loading="loading"
+          :error="error"
+          :count="4"
+          @retry="fetchProducts"
+        />
+        <div v-else-if="featuredProducts.length" class="products-grid">
           <ProductCard v-for="product in featuredProducts" :key="product.id" :product="product" />
         </div>
+        <p v-else class="api-empty-state">
+          Belum ada produk unggulan.
+          <RouterLink to="/products">Jelajahi katalog produk</RouterLink>.
+        </p>
       </div>
     </section>
   </div>
